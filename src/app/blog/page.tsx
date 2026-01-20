@@ -23,7 +23,7 @@ function BlogIndexPage() {
 
   const renderPostCard = (post: any) => (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
-        <Card className="flex flex-col h-full bg-gradient-to-br from-black to-red-900/50 text-white shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
+        <Card className="flex flex-col h-full bg-black/40 backdrop-blur-sm text-white shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
             <div className="overflow-hidden relative rounded-t-2xl">
                  {post.imageUrl ? (
                     <Image 
@@ -57,11 +57,11 @@ function BlogIndexPage() {
 
   const renderContent = () => {
     if (isLoadingPosts) {
-        return <p className="text-center text-muted-foreground">Loading posts...</p>
+        return <p className="text-center text-white">Loading posts...</p>
     }
 
     if (!posts || posts.length === 0) {
-        return <p className="text-center text-muted-foreground">No blog posts available yet.</p>
+        return <p className="text-center text-red-200">No blog posts available yet.</p>
     }
     
     return (
@@ -76,12 +76,12 @@ function BlogIndexPage() {
   }
   
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
+    <div className="flex flex-col min-h-dvh bg-transparent">
         <Header />
         <main className="flex-1">
             <section className="pt-32 pb-16">
                  <div className="container">
-                    <h1 className="text-4xl md:text-5xl font-extrabold font-headline mb-12 text-center">Notre Blog</h1>
+                    <h1 className="text-4xl md:text-5xl font-extrabold font-headline mb-12 text-center text-white">Notre Blog</h1>
                     {renderContent()}
                  </div>
             </section>

@@ -48,7 +48,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
 
   const renderContent = () => {
     if (isLoading) {
-      return <div className="text-center py-20">Loading service...</div>;
+      return <div className="text-center py-20 text-white">Loading service...</div>;
     }
 
     if (error) {
@@ -76,7 +76,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
             </div>
             <div className="container relative text-center">
-                <h1 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tight">
+                <h1 className="text-4xl md:text-6xl font-extrabold font-headline tracking-tight text-white">
                     {service.name}
                 </h1>
             </div>
@@ -85,7 +85,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
         <section className="py-12 md:py-16">
             <div className="container max-w-4xl">
                  <div
-                    className="prose dark:prose-invert max-w-none mx-auto prose-headings:font-headline prose-headings:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground"
+                    className="prose dark:prose-invert max-w-none mx-auto prose-headings:font-headline prose-headings:text-white prose-p:text-white/80 prose-strong:text-white prose-li:text-white/80"
                     dangerouslySetInnerHTML={{ __html: service.description }}
                 />
                  <div className="mt-12 text-center">
@@ -103,7 +103,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
   };
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
+    <div className="flex flex-col min-h-dvh bg-transparent">
       <Header />
       <main className="flex-1">
         {renderContent()}

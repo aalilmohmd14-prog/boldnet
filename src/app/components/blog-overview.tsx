@@ -24,7 +24,7 @@ export default function BlogOverview({ content }: { content: any }) {
 
   const renderPostCard = (post: any) => (
     <Link href={`/blog/${post.slug}`} className="group block h-full">
-        <Card className="flex flex-col h-full bg-gradient-to-br from-black to-red-900/50 text-white shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
+        <Card className="flex flex-col h-full bg-black/40 backdrop-blur-sm text-white shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
             <div className="overflow-hidden relative rounded-t-2xl">
                  {post.imageUrl ? (
                     <Image 

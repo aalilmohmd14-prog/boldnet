@@ -39,10 +39,10 @@ function getYouTubeEmbedUrl(url: string) {
 // Re-usable section components from the main page dynamic sections
 function FeatureGridSection({ content }: { content: any }) {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
+    <section className="w-full py-12 md:py-24 lg:py-32">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-headline">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-headline text-white">
             {content.title}
           </h2>
         </div>
@@ -68,13 +68,13 @@ function FeatureGridSection({ content }: { content: any }) {
 
 function CTASection({ content }: { content: any }) {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-black/20">
       <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
         <div className="space-y-3">
-          <h2 className="text-3xl font-bold tracking-tight md:text-4xl/tight font-headline">
+          <h2 className="text-3xl font-bold tracking-tight md:text-4xl/tight font-headline text-white">
             {content.title}
           </h2>
-          <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed">
+          <p className="mx-auto max-w-[600px] text-white/80 md:text-xl/relaxed">
             {content.subtitle}
           </p>
         </div>
@@ -107,10 +107,10 @@ function TextImageSection({ content }: { content: any }) {
             />
           </div>
           <div className="space-y-4">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline text-white">
               {content.title}
             </h2>
-            <p className="text-muted-foreground md:text-xl/relaxed">
+            <p className="text-white/80 md:text-xl/relaxed">
               {content.text}
             </p>
              {content.buttonText && (
@@ -133,10 +133,10 @@ function YoutubeGallerySection({ content }: { content: any }) {
         return null;
     }
     return (
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
+        <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                    <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-headline">
+                    <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-headline text-white">
                         {content.title || 'Our Video Gallery'}
                     </h2>
                 </div>
@@ -243,10 +243,10 @@ export default function LandingPage({ params }: { params: { slug: string } }) {
 
   if (isLoading) {
     return (
-        <div className="flex flex-col min-h-dvh bg-background">
+        <div className="flex flex-col min-h-dvh bg-transparent">
             <Header />
             <main className="flex-1 flex items-center justify-center">
-                 <p>Loading Page...</p>
+                 <p className="text-white">Loading Page...</p>
             </main>
             <Footer />
         </div>
@@ -255,12 +255,12 @@ export default function LandingPage({ params }: { params: { slug: string } }) {
 
   if (error) {
      return (
-        <div className="flex flex-col min-h-dvh bg-background">
+        <div className="flex flex-col min-h-dvh bg-transparent">
             <Header />
             <main className="flex-1 flex items-center justify-center text-center">
                  <div>
-                    <h1 className="text-4xl font-bold">404</h1>
-                    <p className="text-muted-foreground">{error}</p>
+                    <h1 className="text-4xl font-bold text-white">404</h1>
+                    <p className="text-red-200">{error}</p>
                     <Button asChild variant="link" className="mt-4"><Link href="/">Go back home</Link></Button>
                  </div>
             </main>
@@ -270,7 +270,7 @@ export default function LandingPage({ params }: { params: { slug: string } }) {
   }
   
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
+    <div className="flex flex-col min-h-dvh bg-transparent">
         <Header />
         <main className="flex-1">
             <DynamicSectionsRenderer sections={pageData?.content || []} />

@@ -117,14 +117,14 @@ function PortfolioPageContent() {
       return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-                <Skeleton key={i} className="w-full aspect-[4/3] rounded-lg" />
+                <Skeleton key={i} className="w-full aspect-[4/3] rounded-lg bg-white/10" />
             ))}
         </div>
       )
     }
 
     if (!items || items.length === 0) {
-      return <p className="text-center text-muted-foreground">No portfolio items available yet.</p>;
+      return <p className="text-center text-red-200">No portfolio items available yet.</p>;
     }
     
     return (
@@ -137,7 +137,7 @@ function PortfolioPageContent() {
   };
   
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
+    <div className="flex flex-col min-h-dvh bg-transparent">
       <Header />
       <main className="flex-1">
         <section className="pt-32 pb-16">
@@ -155,5 +155,3 @@ function PortfolioPageContent() {
 }
 
 export default PortfolioPageContent;
-
-    

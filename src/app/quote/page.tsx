@@ -7,7 +7,7 @@ import { LanguageProvider } from '@/app/context/language-context';
 
 export default function QuotePage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background">
+    <div className="flex flex-col min-h-dvh bg-transparent">
       <Header />
       <main className="flex-1 py-12 md:py-24">
         <QuoteForm />
