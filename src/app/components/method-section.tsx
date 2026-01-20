@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
@@ -101,13 +102,13 @@ const Step = ({ step, index, isActive, isMobile }: StepProps) => {
       transition={{ delay: index * 0.15 }}
       className={cn(
         'group relative flex w-full items-center',
-        !isMobile && (index % 2 === 0 ? 'justify-start' : 'justify-end')
+        !isMobile && (index % 2 === 0 ? 'justify-end' : 'justify-start')
       )}
     >
       <div
         className={cn(
           'w-full md:w-1/2',
-          !isMobile && (index % 2 === 0 ? 'pr-8' : 'pl-8')
+          !isMobile && (index % 2 === 0 ? 'pl-8' : 'pr-8')
         )}
       >
         <motion.div
@@ -124,7 +125,7 @@ const Step = ({ step, index, isActive, isMobile }: StepProps) => {
           <div
             className={cn(
               'flex items-center gap-4',
-              !isMobile && index % 2 !== 0 && 'flex-row-reverse'
+              !isMobile && index % 2 === 0 && 'flex-row-reverse'
             )}
           >
             {/* Desktop Icon and Line */}
@@ -149,7 +150,7 @@ const Step = ({ step, index, isActive, isMobile }: StepProps) => {
             <div
               className={cn(
                 'flex-grow',
-                !isMobile && (index % 2 === 0 ? 'text-left' : 'text-right')
+                !isMobile && (index % 2 === 0 ? 'text-right' : 'text-left')
               )}
             >
               <div className="flex items-center gap-3 md:hidden">
