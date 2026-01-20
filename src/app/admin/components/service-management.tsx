@@ -103,7 +103,8 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
       return;
     }
 
-    const serviceData = { name, slug, description, iconName, iconUrl, imageUrl, landingPageId };
+    const finalLandingPageId = landingPageId === 'unlinked' ? '' : landingPageId;
+    const serviceData = { name, slug, description, iconName, iconUrl, imageUrl, landingPageId: finalLandingPageId };
 
     if (serviceToEdit) {
       const docRef = doc(firestore, 'services', serviceToEdit.id);
@@ -198,7 +199,7 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
                     <SelectValue placeholder="Select a landing page" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="unlinked">None</SelectItem>
                     {landingPages?.map((page: any) => (
                         <SelectItem key={page.id} value={page.id}>
                             {page.title}
