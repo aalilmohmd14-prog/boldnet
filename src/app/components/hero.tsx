@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import SmartphoneAnimation from './smartphone-animation';
 import React from 'react';
+import FallingMoney from './falling-money';
 
 export default function Hero() {
   const { t } = useLanguage();
@@ -22,7 +23,9 @@ export default function Hero() {
     )}>
        <div className="absolute inset-0 z-0 opacity-50" style={{backgroundImage: 'radial-gradient(circle at 50% 50%, hsla(var(--primary) / 0.1), transparent 70%)'}}></div>
 
-      <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center min-h-screen px-4 md:px-6 pt-32 pb-12 relative z-10">
+       <FallingMoney />
+
+      <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center min-h-screen px-4 md:px-6 pt-32 pb-12 relative z-20">
         <div className="space-y-6 text-center lg:text-left">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-headline leading-normal tracking-normal text-white">
             {title}
