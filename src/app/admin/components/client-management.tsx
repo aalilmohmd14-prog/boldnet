@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { useFirestore, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
-
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -26,20 +25,15 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, GripVertical, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/ui/image-upload';
 import Image from 'next/image';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
-function ClientForm({ clientToEdit, onComplete }: { clientToEdit?: any, onComplete: () => void }) {
+function ClientForm({ clientToEdit, onComplete, clientsCount }: { clientToEdit?: any, onComplete: () => void, clientsCount: number }) {
   const [name, setName] = useState(clientToEdit?.name || '');
   const [logoUrl, setLogoUrl] = useState(clientToEdit?.logoUrl || '');
   const [websiteUrl, setWebsiteUrl] = useState(clientToEdit?.websiteUrl || '');
@@ -68,13 +62,10 @@ function ClientForm({ clientToEdit, onComplete }: { clientToEdit?: any, onComple
       await updateDoc(docRef, clientData);
       toast({ title: 'Client Updated', description: `${name} has been successfully updated.` });
     } else {
-      await addDocumentNonBlocking(clientsCollection, clientData);
+      await addDocumentNonBlocking(clientsCollection, { ...clientData, order: clientsCount });
       toast({ title: 'Client Added', description: `${name} has been successfully added.` });
     }
     
-    setName('');
-    setLogoUrl('');
-    setWebsiteUrl('');
     onComplete();
   };
 
@@ -123,6 +114,32 @@ function ClientForm({ clientToEdit, onComplete }: { clientToEdit?: any, onComple
 }
 
 
+function SortableClientItem({ client, onEdit, onDelete }: { client: any; onEdit: () => void; onDelete: () => void; }) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({id: client.id});
+    const style = { transform: CSS.Transform.toString(transform), transition };
+
+    return (
+        <Card ref={setNodeRef} style={style} className="flex items-center gap-4 p-4 touch-none">
+            <button {...attributes} {...listeners} className="cursor-grab p-2 -ml-2">
+                <GripVertical className="h-5 w-5 text-muted-foreground" />
+            </button>
+            <Image src={client.logoUrl} alt={client.name} width={40} height={40} className="rounded-md object-contain" />
+            <div className="flex-1">
+                <p className="font-semibold">{client.name}</p>
+                {client.websiteUrl && (
+                    <a href={client.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:underline">
+                        {client.websiteUrl}
+                    </a>
+                )}
+            </div>
+            <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" onClick={onEdit}><Edit className="h-4 w-4" /></Button>
+                <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={onDelete}><Trash2 className="h-4 w-4" /></Button>
+            </div>
+        </Card>
+    );
+}
+
 export default function ClientManagement() {
     const firestore = useFirestore();
     const { toast } = useToast();
@@ -137,6 +154,13 @@ export default function ClientManagement() {
 
     const { data: clients, isLoading: isLoadingClients } = useCollection(clientsCollection);
     
+    const sortedClients = clients?.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) || [];
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    );
+
     const confirmDelete = async () => {
         if (!clientToDelete) return;
         try {
@@ -165,66 +189,64 @@ export default function ClientManagement() {
         setIsFormVisible(false);
     };
 
+    async function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+        if (active.id !== over?.id && sortedClients) {
+            const oldIndex = sortedClients.findIndex((c) => c.id === active.id);
+            const newIndex = sortedClients.findIndex((c) => c.id === over!.id);
+            const newSortedClients = arrayMove(sortedClients, oldIndex, newIndex);
+            
+            const batch = writeBatch(firestore);
+            newSortedClients.forEach((client, index) => {
+                const docRef = doc(firestore, "clients", client.id);
+                batch.update(docRef, { order: index });
+            });
+            
+            try {
+                await batch.commit();
+                toast({ title: "Order Updated" });
+            } catch (error) {
+                console.error(error);
+                toast({ variant: 'destructive', title: 'Error', description: "Could not reorder clients." });
+            }
+        }
+    }
+
 
     return (
         <>
             <div className="w-full max-w-4xl mx-auto flex flex-col items-center gap-8">
                 {isFormVisible ? (
-                    <ClientForm clientToEdit={editingClient} onComplete={handleFormComplete} />
+                    <ClientForm clientToEdit={editingClient} onComplete={handleFormComplete} clientsCount={clients?.length || 0} />
                 ) : (
                     <Card className="w-full">
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
                                 <CardTitle>Manage Clients</CardTitle>
                                 <CardDescription>
-                                    Add, edit, or delete the clients in your showcase.
+                                    Add, edit, delete, and reorder the clients in your showcase.
                                 </CardDescription>
                             </div>
-                            <Button onClick={handleAddNew}>Add New Client</Button>
+                            <Button onClick={handleAddNew}><Plus className="mr-2 h-4 w-4" /> Add New Client</Button>
                         </CardHeader>
                         <CardContent>
                              {isLoadingClients && <p className="text-center">Loading clients...</p>}
-                             {!isLoadingClients && clients && clients.length === 0 && <p className="text-center text-muted-foreground py-8">No clients added yet.</p>}
-                             {!isLoadingClients && clients && clients.length > 0 && (
-                                 <Table>
-                                     <TableHeader>
-                                         <TableRow>
-                                             <TableHead className="w-[80px]">Logo</TableHead>
-                                             <TableHead>Name</TableHead>
-                                             <TableHead>Website</TableHead>
-                                             <TableHead className="text-right">Actions</TableHead>
-                                         </TableRow>
-                                     </TableHeader>
-                                     <TableBody>
-                                        {clients.map((client) => (
-                                            <TableRow key={client.id}>
-                                                <TableCell>
-                                                    <Image src={client.logoUrl} alt={client.name} width={40} height={40} className="rounded-md object-contain" />
-                                                </TableCell>
-                                                <TableCell className="font-medium">{client.name}</TableCell>
-                                                <TableCell>
-                                                  {client.websiteUrl ? (
-                                                    <a href={client.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:underline">
-                                                        {client.websiteUrl}
-                                                    </a>
-                                                  ) : (
-                                                    <span className="text-muted-foreground/50">Not set</span>
-                                                  )}
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="icon" onClick={() => handleEdit(client)}>
-                                                        <Edit className="h-4 w-4" />
-                                                        <span className="sr-only">Edit</span>
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => setClientToDelete({id: client.id, name: client.name})}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                        <span className="sr-only">Delete</span>
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                     </TableBody>
-                                 </Table>
+                             {!isLoadingClients && sortedClients && sortedClients.length === 0 && <p className="text-center text-muted-foreground py-8">No clients added yet.</p>}
+                             {!isLoadingClients && sortedClients && sortedClients.length > 0 && (
+                                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                                    <SortableContext items={sortedClients.map((c:any) => c.id)} strategy={verticalListSortingStrategy}>
+                                        <div className="space-y-4">
+                                            {sortedClients.map((client) => (
+                                                <SortableClientItem 
+                                                    key={client.id} 
+                                                    client={client} 
+                                                    onEdit={() => handleEdit(client)} 
+                                                    onDelete={() => setClientToDelete({id: client.id, name: client.name})}
+                                                />
+                                            ))}
+                                        </div>
+                                    </SortableContext>
+                                </DndContext>
                              )}
                         </CardContent>
                     </Card>

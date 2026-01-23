@@ -23,6 +23,10 @@
           "type": "string",
           "description": "URL of the client's website.",
           "format": "uri"
+        },
+        "order": {
+          "type": "number",
+          "description": "The display order of the client."
         }
       },
       "required": [
