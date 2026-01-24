@@ -106,7 +106,6 @@
   "previous": "Précédent",
   "next": "Suivant",
   "submitQuote": "Envoyer la demande",
-  
   "adminPanel": "Panneau d'Administration",
   "adminDashboard": "Tableau de Bord",
   "adminSubmissions": "Soumissions",
@@ -124,7 +123,6 @@
   "adminLogout": "Déconnexion",
   "adminWelcome": "Bienvenue sur votre Tableau de Bord",
   "adminWelcomeDesc": "Utilisez le menu latéral pour gérer le contenu de votre site. Vous pouvez ajouter, modifier, réorganiser et basculer la visibilité des différentes sections de votre site web public.",
-
   "viewDetails": "Voir les détails",
   "contactSubmissionDetails": "Détails de la soumission de contact",
   "submissionFrom": "Soumission de",
@@ -140,7 +138,8 @@
   "testimonials": "Avis",
   "team": "Équipe",
   "blog": "Blog",
-  "portfolio": "Portfolio"
+  "portfolio": "Portfolio",
+  "heroTitleV2": "10× Vos Profits dans les 6 Prochains Mois avec BoldNetDigital",
+  "heroSubtitleV2": "Plus de Prospects. Plus de Ventes. Une Croissance Réelle.",
+  "heroDescriptionV2": "Nous construisons des systèmes de marketing qui génèrent des prospects qualifiés, les convertissent et permettent une mise à l'échelle sans limites."
 }
-
-    

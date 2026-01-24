@@ -106,7 +106,6 @@
   "previous": "Previous",
   "next": "Next",
   "submitQuote": "Submit Request",
-
   "adminPanel": "Admin Panel",
   "adminDashboard": "Dashboard",
   "adminSubmissions": "Submissions",
@@ -124,7 +123,6 @@
   "adminLogout": "Logout",
   "adminWelcome": "Welcome to your Dashboard",
   "adminWelcomeDesc": "Use the sidebar to manage your site content. You can add, edit, reorder, and toggle the visibility of different sections of your public website.",
-
   "viewDetails": "View Details",
   "contactSubmissionDetails": "Contact Submission Details",
   "submissionFrom": "Submission from",
@@ -140,7 +138,8 @@
   "testimonials": "Testimonials",
   "team": "Team",
   "blog": "Blog",
-  "portfolio": "Portfolio"
+  "portfolio": "Portfolio",
+  "heroTitleV2": "10× Your Profits in the next 6 Months with BoldNetDigital",
+  "heroSubtitleV2": "More Leads. More Sales. Real Growth.",
+  "heroDescriptionV2": "We build marketing systems that generate qualified leads, convert them and help scale without limits."
 }
-
-    

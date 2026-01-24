@@ -12,11 +12,6 @@ import FallingMoney from './falling-money';
 export default function Hero() {
   const { t } = useLanguage();
 
-  const title = "10× Your Profits in the next 6 Months with BoldNetDigital";
-  const subtitle = "More Leads. More Sales. Real Growth.";
-  const description = "We build marketing systems that generate qualified leads, convert them and help scale without limits.";
-  const ctaText = "Get Started";
-
   return (
     <section className={cn(
         "relative text-white overflow-hidden bg-transparent"
@@ -32,18 +27,18 @@ export default function Hero() {
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-headline leading-normal tracking-normal text-white">
-            {title}
+            {t('heroTitleV2')}
           </h1>
 
           <p className="text-xl md:text-2xl text-red-100/90 max-w-2xl mx-auto lg:mx-0">
-            {subtitle}
+            {t('heroSubtitleV2')}
           </p>
           <p className="text-lg text-red-100/70 max-w-xl mx-auto lg:mx-0">
-            {description}
+            {t('heroDescriptionV2')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <Button asChild size="lg" className="rounded-full px-8 py-6 text-lg bg-white text-red-700 hover:bg-white/90 font-bold">
-              <Link href="#contact">{ctaText} <ArrowRight className="ml-2 h-5 w-5" /></Link>
+              <Link href="#contact">{t('getStarted')} <ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
           </div>
         </div>
