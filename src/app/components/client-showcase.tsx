@@ -17,7 +17,7 @@ export default function ClientShowcase() {
 
   const renderClients = (isClone = false) => (
     (clients || []).map((client) => (
-      <div key={isClone ? `${client.id}-clone` : client.id} className="flex-shrink-0 px-8">
+      <li key={isClone ? `${client.id}-clone` : client.id} className="flex-shrink-0 px-8">
         <Image
           src={client.logoUrl}
           alt={`${client.name} logo`}
@@ -25,7 +25,7 @@ export default function ClientShowcase() {
           height={100}
           className="object-contain aspect-square grayscale hover:grayscale-0 transition-all brightness-0 invert"
         />
-      </div>
+      </li>
     ))
   );
 
@@ -42,11 +42,13 @@ export default function ClientShowcase() {
           <div className="text-center text-white">Loading clients...</div>
         )}
         {clients && clients.length > 0 && (
-          <div className="marquee-container">
-            <div className="marquee">
+          <div className="marquee">
+            <ul className="marquee-content">
               {renderClients()}
+            </ul>
+            <ul className="marquee-content" aria-hidden="true">
               {renderClients(true)}
-            </div>
+            </ul>
           </div>
         )}
       </div>

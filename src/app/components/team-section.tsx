@@ -16,43 +16,38 @@ export default function TeamSection() {
   const { data: members, isLoading: isLoadingMembers } = useCollection(teamQuery);
   
 
-  const renderMemberCard = (member: any) => {
-    const nameParts = member.name.split(' ');
-    const lastName = nameParts.pop() || '';
-    const firstName = nameParts.join(' ');
-
-    return (
-        <div className="flex-shrink-0 w-48 px-4">
-             <Card className="border-none shadow-none bg-transparent">
-                <CardContent className="p-0 flex flex-col items-center text-center gap-4">
-                    <Image 
-                        src={member.imageUrl}
-                        alt={member.name}
-                        width={128}
-                        height={128}
-                        className="rounded-full object-cover aspect-square w-32 h-32"
-                    />
-                    <div>
-                        <h3 className="font-bold text-lg font-headline tracking-wide text-white">
-                            <span>{firstName}</span>
-                            {lastName && <br />}
-                            <span>{lastName}</span>
-                        </h3>
-                        <p className="text-white/80">{member.position}</p>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-    );
-  };
-
   const renderMembers = (isClone = false) => (
-    (members || []).map((member) => (
-        <div key={isClone ? `${member.id}-clone` : member.id}>
-            {renderMemberCard(member)}
-        </div>
-    ))
+    (members || []).map((member) => {
+        const nameParts = member.name.split(' ');
+        const lastName = nameParts.pop() || '';
+        const firstName = nameParts.join(' ');
+    
+        return (
+            <li key={isClone ? `${member.id}-clone` : member.id} className="flex-shrink-0 w-48 px-4">
+                 <Card className="border-none shadow-none bg-transparent">
+                    <CardContent className="p-0 flex flex-col items-center text-center gap-4">
+                        <Image 
+                            src={member.imageUrl}
+                            alt={member.name}
+                            width={128}
+                            height={128}
+                            className="rounded-full object-cover aspect-square w-32 h-32"
+                        />
+                        <div>
+                            <h3 className="font-bold text-lg font-headline tracking-wide text-white">
+                                <span>{firstName}</span>
+                                {lastName && <br />}
+                                <span>{lastName}</span>
+                            </h3>
+                            <p className="text-white/80">{member.position}</p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </li>
+        );
+    })
   );
+
 
   const renderContent = () => {
     if (isLoadingMembers) {
@@ -64,11 +59,13 @@ export default function TeamSection() {
     }
 
      return (
-        <div className="marquee-container">
-            <div className="marquee">
+        <div className="marquee">
+            <ul className="marquee-content">
                 {renderMembers()}
+            </ul>
+            <ul className="marquee-content" aria-hidden="true">
                 {renderMembers(true)}
-            </div>
+            </ul>
         </div>
     )
   }
