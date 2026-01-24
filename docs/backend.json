@@ -11,8 +11,12 @@
           "description": "Unique identifier for the Client entity."
         },
         "name": {
-          "type": "string",
-          "description": "Name of the client."
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "fr": { "type": "string" }
+          },
+          "description": "Multilingual name of the client."
         },
         "logoUrl": {
           "type": "string",
@@ -46,16 +50,24 @@
           "description": "Unique identifier for the Service entity."
         },
         "name": {
-          "type": "string",
-          "description": "Name of the service."
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "fr": { "type": "string" }
+          },
+          "description": "Multilingual name of the service."
         },
         "slug": {
           "type": "string",
           "description": "URL-friendly identifier for the service page."
         },
         "description": {
-          "type": "string",
-          "description": "Description of the service."
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "fr": { "type": "string" }
+          },
+          "description": "Multilingual description of the service."
         },
         "iconName": {
           "type": "string",
@@ -94,12 +106,20 @@
           "description": "Unique identifier for the FunnelStep entity."
         },
         "name": {
-          "type": "string",
-          "description": "Name of the funnel step."
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "fr": { "type": "string" }
+          },
+          "description": "Multilingual name of the funnel step."
         },
         "description": {
-          "type": "string",
-          "description": "Description of the funnel step."
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "fr": { "type": "string" }
+          },
+          "description": "Multilingual description of the funnel step."
         },
         "iconUrl": {
           "type": "string",
@@ -108,8 +128,7 @@
         },
         "order": {
           "type": "number",
-          "description": "The order in which this funnel step appears in the funnel.",
-          "format": "integer"
+          "description": "The order in which this funnel step appears in the funnel."
         }
       },
       "required": [
@@ -253,10 +272,10 @@
           "type": "object",
           "description": "Content for the homepage hero section.",
           "properties": {
-            "tagline": { "type": "string" },
-            "title1": { "type": "string" },
-            "title2": { "type": "string" },
-            "description": { "type": "string" },
+            "tagline": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "title1": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "title2": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "description": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
             "imageUrl": { "type": "string", "format": "uri" }
           }
         }
@@ -346,7 +365,11 @@
           "description": "Unique identifier for the LandingPage."
         },
         "title": {
-          "type": "string",
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "fr": { "type": "string" }
+          },
           "description": "The main title of the landing page, used for the H1 and browser tab."
         },
         "slug": {
@@ -384,7 +407,11 @@
           "description": "Unique identifier for the CodedLandingPage."
         },
         "title": {
-          "type": "string",
+          "type": "object",
+          "properties": {
+            "en": { "type": "string" },
+            "fr": { "type": "string" }
+          },
           "description": "The main title of the page, for display in the admin panel."
         },
         "slug": {
@@ -411,15 +438,15 @@
             "backgroundImageUrl": { "type": "string", "format": "uri" },
             "logoSvg": { "type": "string", "description": "SVG code for the logo." },
             "logoSize": { "type": "number", "description": "Size of the logo in pixels." },
-            "title": { "type": "string" },
-            "subtitle": { "type": "string" },
-            "ctaButtonText": { "type": "string" }
+            "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "subtitle": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "ctaButtonText": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } }
           }
         },
         "team": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
+            "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
             "backgroundImageUrl": { "type": "string", "format": "uri" },
             "professions": {
               "type": "array",
@@ -436,27 +463,27 @@
         "problem": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "mainPoint": { "type": "string" },
+            "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "mainPoint": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
             "listItems": { "type": "array", "items": { "type": "string" } },
-            "howToTitle": { "type": "string" },
+            "howToTitle": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
             "howToListItems": { "type": "array", "items": { "type": "string" } },
-            "question": { "type": "string" },
-            "ctaButtonText": { "type": "string" }
+            "question": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "ctaButtonText": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } }
           }
         },
         "expertise": {
             "type": "object",
             "properties": {
                 "backgroundImageUrl": { "type": "string", "format": "uri" },
-                "title": { "type": "string" },
-                "subtitle": { "type": "string" }
+                "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+                "subtitle": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } }
             }
         },
         "beneficiaries": {
             "type": "object",
             "properties": {
-                "title": { "type": "string" },
+                "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
                 "items": {
                     "type": "array",
                     "items": {
@@ -468,29 +495,29 @@
                         }
                     }
                 },
-                "conclusion": { "type": "string" },
-                "ctaButtonText": { "type": "string" }
+                "conclusion": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+                "ctaButtonText": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } }
             }
         },
         "results": {
           "type": "object",
           "properties": {
-            "title": { "type": "string" },
-            "withoutTitle": { "type": "string" },
+            "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "withoutTitle": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
             "withoutItems": { "type": "array", "items": { "type": "string" } },
             "withoutImage": { "type": "string", "format": "uri" },
-            "withTitle": { "type": "string" },
+            "withTitle": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
             "withItems": { "type": "array", "items": { "type": "string" } },
             "withImage": { "type": "string", "format": "uri" },
-            "bonus": { "type": "string" },
-            "ctaButtonText": { "type": "string" }
+            "bonus": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "ctaButtonText": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } }
           }
         },
         "method": {
           "type": "object",
           "properties": {
-            "conclusion": { "type": "string" },
-            "ctaButtonText": { "type": "string" },
+            "conclusion": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "ctaButtonText": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
             "steps": {
               "type": "array",
               "items": {
@@ -517,8 +544,8 @@
         "timelineMethod": {
             "type": "object",
             "properties": {
-                "title": { "type": "string" },
-                "ctaButtonText": { "type": "string" },
+                "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+                "ctaButtonText": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
                 "steps": {
                     "type": "array",
                     "items": {
@@ -538,8 +565,8 @@
           "type": "object",
           "properties": {
             "backgroundImageUrl": { "type": "string", "format": "uri" },
-            "title": { "type": "string" },
-            "subtitle": { "type": "string" }
+            "title": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } },
+            "subtitle": { "type": "object", "properties": { "en": { "type": "string" }, "fr": { "type": "string" } } }
           }
         }
       }
@@ -555,7 +582,8 @@
             "description": "Unique identifier for the Testimonial."
           },
           "name": {
-            "type": "string",
+            "type": "object",
+            "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
             "description": "Name of the client giving the review."
           },
           "avatarUrl": {
@@ -564,7 +592,8 @@
             "format": "uri"
           },
           "review": {
-            "type": "string",
+            "type": "object",
+            "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
             "description": "The text content of the review."
           },
           "rating": {
@@ -578,89 +607,140 @@
             "description": "The platform where the review originated, e.g., 'Google'."
           },
           "position": {
-            "type": "string",
+            "type": "object",
+            "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
             "description": "Position or title of the client, e.g., 'CEO'."
           }
         },
         "required": ["id", "name", "avatarUrl", "review", "rating"]
+    },
+    "TeamMember": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TeamMember",
+      "type": "object",
+      "description": "Represents a member of the team.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the TeamMember."
+        },
+        "name": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "Name of the team member."
+        },
+        "position": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "Position/title of the team member."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the team member's photo.",
+          "format": "uri"
+        },
+         "order": {
+          "type": "number",
+          "description": "The display order of the member."
+        }
       },
-      "TeamMember": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "TeamMember",
-        "type": "object",
-        "description": "Represents a member of the team.",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the TeamMember."
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the team member."
-          },
-          "position": {
-            "type": "string",
-            "description": "Position/title of the team member."
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "URL of the team member's photo.",
-            "format": "uri"
-          },
-           "order": {
-            "type": "number",
-            "description": "The display order of the member."
+      "required": ["id", "name", "position", "imageUrl", "order"]
+    },
+    "BlogPost": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "BlogPost",
+      "type": "object",
+      "description": "Represents a single blog post.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the BlogPost."
+        },
+        "title": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "The main title of the blog post."
+        },
+        "slug": {
+          "type": "string",
+          "description": "The URL-friendly identifier for the post."
+        },
+        "excerpt": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "A short summary of the post for display in lists."
+        },
+         "imageUrl": {
+          "type": "string",
+          "description": "URL of the post's main image.",
+          "format": "uri"
+        },
+        "content": {
+          "type": "array",
+          "description": "An array of content sections, similar to landing pages.",
+          "items": {
+             "$ref": "#/backend/entities/Section"
           }
         },
-        "required": ["id", "name", "position", "imageUrl", "order"]
-      },
-      "BlogPost": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "title": "BlogPost",
-        "type": "object",
-        "description": "Represents a single blog post.",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Unique identifier for the BlogPost."
-          },
-          "title": {
-            "type": "string",
-            "description": "The main title of the blog post."
-          },
-          "slug": {
-            "type": "string",
-            "description": "The URL-friendly identifier for the post."
-          },
-          "excerpt": {
-            "type": "string",
-            "description": "A short summary of the post for display in lists."
-          },
-           "imageUrl": {
-            "type": "string",
-            "description": "URL of the post's main image.",
-            "format": "uri"
-          },
-          "content": {
-            "type": "array",
-            "description": "An array of content sections, similar to landing pages.",
-            "items": {
-               "$ref": "#/backend/entities/Section"
-            }
-          },
-          "createdAt": {
-            "type": "string",
-            "description": "Timestamp of when the post was created.",
-            "format": "date-time"
-          },
-           "updatedAt": {
-            "type": "string",
-            "description": "Timestamp of when the post was last updated.",
-            "format": "date-time"
-          }
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of when the post was created.",
+          "format": "date-time"
         },
-        "required": ["id", "title", "slug"]
+         "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of when the post was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "title", "slug"]
+    },
+    "PortfolioItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PortfolioItem",
+      "type": "object",
+      "description": "Represents a single item in the portfolio.",
+      "properties": {
+        "id": { "type": "string" },
+        "title": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "Multilingual title of the portfolio item."
+        },
+        "description": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "Multilingual description of the portfolio item."
+        },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "videoUrl": { "type": "string", "format": "uri" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "title", "imageUrl", "order"]
+    },
+    "FooterSettings": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FooterSettings",
+      "type": "object",
+      "description": "Stores global content for the website footer.",
+      "properties": {
+        "description": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "Multilingual short description for the footer."
+        },
+        "address": {
+          "type": "object",
+          "properties": { "en": { "type": "string" }, "fr": { "type": "string" } },
+          "description": "Multilingual address for the footer."
+        },
+        "instagramUrl": { "type": "string", "format": "uri" },
+        "facebookUrl": { "type": "string", "format": "uri" },
+        "linkedinUrl": { "type": "string", "format": "uri" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" }
       }
+    }
   },
   "auth": {
     "providers": [
@@ -893,8 +973,35 @@
             }
           ]
         }
+      },
+      {
+        "path": "/portfolio_items/{itemId}",
+        "definition": {
+          "entityName": "PortfolioItem",
+          "schema": {
+            "$ref": "#/backend/entities/PortfolioItem"
+          },
+          "description": "Stores portfolio items. Publicly readable, admin write.",
+          "params": [
+            { "name": "itemId", "description": "Unique identifier for the portfolio item." }
+          ]
+        }
+      },
+      {
+        "path": "/footer_settings/{settingsId}",
+        "definition": {
+          "entityName": "FooterSettings",
+          "schema": {
+            "$ref": "#/backend/entities/FooterSettings"
+          },
+          "description": "Stores footer content. Publicly readable, admin write.",
+          "params": [
+            { "name": "settingsId", "description": "Should be a single document, e.g., 'main'." }
+          ]
+        }
       }
     ],
     "reasoning": "The Firestore structure is designed to accommodate the entities and features described in the request, focusing on simplicity, security, and scalability. The structure leverages structural segregation, path-based ownership and denormalization to ensure authorization independence and efficient data retrieval. It's crucial to note that given the information available from the request, the data structure is designed to accommodate the described UI elements.\n\n1.  **Clients**: Stored in a root-level `clients` collection. This allows for easy listing and management of clients. Security rules would typically restrict write access to authorized admin users.\n2.  **Services**: Similar to clients, services are stored in a root-level `services` collection for straightforward access and management. Admin roles would govern write access. The service entity now includes both `iconName` for library icons and `iconUrl` for custom uploads, both are optional to provide flexibility.\n3.  **Funnel Steps**: Funnel steps, like services and clients, are stored in the root-level `funnel_steps` collection. Admin roles would govern write access.\n4.  **Contact Form Submissions**: All contact form submissions are stored in a root-level `contact_form_submissions` collection. Because these are unauthenticated submissions, security rules will ensure only write operations are permitted, limiting the risk of data injection or manipulation. A server-side function could process these submissions further.\n5.  **Site Settings**: A `site_settings` collection holds global configuration, such as section visibility and now hero section content. This is designed to hold a single document for easy access to global state. It will be publicly readable but only writable by admins.\n6. **Sections**: A new `sections` collection stores dynamic content blocks for the homepage. This allows an administrator to add, remove, and reorder content sections like feature grids, CTAs, etc., without needing to deploy new code. Publicly readable, admin write access.\n7. **Theme Settings**: A new `theme_settings` collection holds global theme configuration, such as logo URL and colors. This is designed to hold a single document for easy access to the site's visual theme. It will be publicly readable but only writable by admins.\n8. **Landing Pages**: A new `landing_pages` collection will store individual, dynamic landing pages. Each document will contain the page's title, slug (for URL), and its own content structure. This makes pages publicly readable but only manageable by admins.\n9. **Testimonials**: A new `testimonials` collection to store client reviews. This allows easy management of testimonials separately from other content, and they can be queried efficiently for display on the front-end. Publicly readable, admin write.\n10. **Team Members**: A new `team_members` collection stores information about team members. This allows for easy management of the team section on the website. Publicly readable, admin write.\n11. **Blog Posts**: A new `blog_posts` collection stores blog articles. This structure mirrors landing pages, allowing for dynamic content creation for each post. It's publicly readable and admin-writable."
   }
 }
+    

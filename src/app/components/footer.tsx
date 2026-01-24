@@ -7,7 +7,7 @@ import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
 export default function Footer() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const firestore = useFirestore();
   const settingsDocRef = useMemoFirebase(() => doc(firestore, 'footer_settings', 'main'), [firestore]);
   const { data: settings, isLoading } = useDoc(settingsDocRef);
@@ -21,14 +21,24 @@ export default function Footer() {
     { href: '#contact', label: t('contactUs') }
   ];
 
-  const description = settings?.description || "Amplifiez votre marque. Dominez le marché. Nous aidons les entreprises ambitieuses à créer des expériences numériques qui génèrent des résultats.";
+  const defaultDescription = {
+    fr: "Amplifiez votre marque. Dominez le marché. Nous aidons les entreprises ambitieuses à créer des expériences numériques qui génèrent des résultats.",
+    en: "Amplify your brand. Dominate the market. We help ambitious companies create digital experiences that drive results."
+  };
+
+  const defaultAddress = {
+      fr: "Technopark Casablanca, P.S, Casablanca 20270, Maroc",
+      en: "Technopark Casablanca, P.S, Casablanca 20270, Morocco"
+  }
+
+  const description = settings?.description?.[language] || defaultDescription[language];
+  const address = settings?.address?.[language] || defaultAddress[language];
+
   const instagramUrl = settings?.instagramUrl || "https://www.instagram.com/boldnetdigital/";
   const facebookUrl = settings?.facebookUrl || "https://web.facebook.com/profile.php?id=61580707476970";
   const linkedinUrl = settings?.linkedinUrl || "#";
   const email = settings?.email || "contact@boldnet.ma";
   const phone = settings?.phone || "+212 6 93 37 99 21";
-  const address = settings?.address || "Technopark Casablanca, P.S, Casablanca 20270, Maroc";
-
 
   return (
     <footer className="w-full bg-transparent text-white/80">
@@ -102,3 +112,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+    
