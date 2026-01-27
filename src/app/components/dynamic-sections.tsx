@@ -18,6 +18,7 @@ import BlogOverview from './blog-overview';
 import ResultsSection from './results-section';
 import NewsletterSection from './newsletter-section';
 import ContactSection from './contact-section';
+import { useLanguage } from '../context/language-context';
 
 // --- Helper Functions ---
 function getYouTubeEmbedUrl(url: string) {
@@ -45,12 +46,13 @@ function getYouTubeEmbedUrl(url: string) {
 // --- Template Components ---
 
 function FeatureGridSection({ content }: { content: any }) {
+  const { language } = useLanguage();
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-background">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-headline">
-            {content.title}
+            {content.title?.[language] || content.title}
           </h2>
         </div>
         <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:max-w-none lg:grid-cols-3 mt-12">
@@ -62,8 +64,8 @@ function FeatureGridSection({ content }: { content: any }) {
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <CardTitle>{col.title}</CardTitle>
-                <p className="text-muted-foreground">{col.description}</p>
+                <CardTitle>{col.title?.[language] || col.title}</CardTitle>
+                <p className="text-muted-foreground">{col.description?.[language] || col.description}</p>
               </CardContent>
             </Card>
           ))}
@@ -74,20 +76,21 @@ function FeatureGridSection({ content }: { content: any }) {
 }
 
 function CTASection({ content }: { content: any }) {
+  const { language } = useLanguage();
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
       <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
         <div className="space-y-3">
           <h2 className="text-3xl font-bold tracking-tight md:text-4xl/tight font-headline">
-            {content.title}
+            {content.title?.[language] || content.title}
           </h2>
           <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-            {content.subtitle}
+            {content.subtitle?.[language] || content.subtitle}
           </p>
         </div>
         <div className="mx-auto w-full max-w-sm space-y-2">
           <Button asChild size="lg" className="w-full">
-            <Link href={content.buttonLink}>{content.buttonText}</Link>
+            <Link href={content.buttonLink}>{content.buttonText?.[language] || content.buttonText}</Link>
           </Button>
         </div>
       </div>
@@ -96,6 +99,7 @@ function CTASection({ content }: { content: any }) {
 }
 
 function TextImageSection({ content }: { content: any }) {
+  const { language } = useLanguage();
   return (
     <section className="w-full py-12 md:py-24 lg:py-32">
       <div className="container px-4 md:px-6">
@@ -106,7 +110,7 @@ function TextImageSection({ content }: { content: any }) {
           <div className={cn(content.imagePosition === 'right' && "lg:order-last")}>
             <Image
               src={content.imageUrl}
-              alt={content.title}
+              alt={content.title?.[language] || content.title}
               width={600}
               height={400}
               className="rounded-lg object-cover"
@@ -115,15 +119,15 @@ function TextImageSection({ content }: { content: any }) {
           </div>
           <div className="space-y-4">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
-              {content.title}
+              {content.title?.[language] || content.title}
             </h2>
             <p className="text-muted-foreground md:text-xl/relaxed">
-              {content.text}
+              {content.text?.[language] || content.text}
             </p>
              {content.buttonText && (
                <Button asChild>
                  <Link href={content.buttonLink || '#'}>
-                   {content.buttonText}
+                   {content.buttonText?.[language] || content.buttonText}
                    <ArrowRight className="ml-2 h-4 w-4" />
                  </Link>
                </Button>
@@ -136,6 +140,7 @@ function TextImageSection({ content }: { content: any }) {
 }
 
 function YoutubeGallerySection({ content }: { content: any }) {
+    const { language } = useLanguage();
     if (!content.videos || content.videos.length === 0) {
         return null;
     }
@@ -144,7 +149,7 @@ function YoutubeGallerySection({ content }: { content: any }) {
             <div className="container px-4 md:px-6">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center">
                     <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-headline">
-                        {content.title || 'Our Video Gallery'}
+                        {content.title?.[language] || content.title || 'Our Video Gallery'}
                     </h2>
                 </div>
                 <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-1 md:grid-cols-2 lg:max-w-none mt-12">
@@ -157,7 +162,7 @@ function YoutubeGallerySection({ content }: { content: any }) {
                                 <div className="aspect-video relative">
                                     <iframe
                                         src={embedUrl}
-                                        title={video.title}
+                                        title={video.title?.[language] || video.title}
                                         frameBorder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowFullScreen
@@ -165,10 +170,10 @@ function YoutubeGallerySection({ content }: { content: any }) {
                                     ></iframe>
                                 </div>
                                 <CardHeader>
-                                    <CardTitle>{video.title}</CardTitle>
+                                    <CardTitle>{video.title?.[language] || video.title}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-muted-foreground">{video.description}</p>
+                                    <p className="text-muted-foreground">{video.description?.[language] || video.description}</p>
                                 </CardContent>
                             </Card>
                         );
