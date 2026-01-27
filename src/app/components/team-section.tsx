@@ -20,7 +20,17 @@ export default function TeamSection() {
 
   const renderMembers = (isClone = false) => (
     (members || []).map((member) => {
-        const name = member.name?.[language] || member.name?.en || '';
+        const getLangValue = (field: any) => {
+            if (typeof field === 'string') return field;
+            if (typeof field === 'object' && field !== null) {
+              return field[language] || field.en || '';
+            }
+            return '';
+        };
+
+        const name = getLangValue(member.name);
+        const position = getLangValue(member.position);
+        
         const nameParts = name.split(' ');
         const lastName = nameParts.pop() || '';
         const firstName = nameParts.join(' ');
@@ -42,7 +52,7 @@ export default function TeamSection() {
                                 {lastName && <br />}
                                 <span>{lastName}</span>
                             </h3>
-                            <p className="text-white/80">{member.position?.[language] || member.position?.en}</p>
+                            <p className="text-white/80">{position}</p>
                         </div>
                     </CardContent>
                 </Card>

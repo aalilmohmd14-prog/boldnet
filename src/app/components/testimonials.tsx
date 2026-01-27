@@ -51,12 +51,23 @@ const StarRating = ({ rating, className }: { rating: number, className?: string 
 
 const TestimonialCard = ({ testimonial }: { testimonial: any }) => {
     const { language } = useLanguage();
-    const reviewText = testimonial.review?.[language] || testimonial.review?.en || '';
+    
+    const getLangValue = (field: any) => {
+        if (typeof field === 'string') return field;
+        if (typeof field === 'object' && field !== null) {
+          return field[language] || field.en || '';
+        }
+        return '';
+    };
+
+    const reviewText = getLangValue(testimonial.review);
+    const name = getLangValue(testimonial.name);
+    const position = getLangValue(testimonial.position);
+
     const TRUNCATE_LENGTH = 150;
     const isTruncated = reviewText.length > TRUNCATE_LENGTH;
     const displayedReview = isTruncated ? `${reviewText.substring(0, TRUNCATE_LENGTH)}...` : reviewText;
-    const name = testimonial.name?.[language] || testimonial.name?.en || '';
-    const position = testimonial.position?.[language] || testimonial.position?.en || '';
+    
 
     return (
         <Dialog>
@@ -127,7 +138,7 @@ export default function Testimonials() {
   const [current, setCurrent] = useState(0);
 
   const testimonialsCollection = useMemoFirebase(
-    () => query(collection(firestore, 'testimonials'), orderBy('name')),
+    () => query(collection(firestore, 'testimonials'), orderBy('rating', 'desc')),
     [firestore]
   );
   const { data: testimonials, isLoading } = useCollection(testimonialsCollection);
@@ -209,5 +220,3 @@ export default function Testimonials() {
     </section>
   );
 }
-
-    
