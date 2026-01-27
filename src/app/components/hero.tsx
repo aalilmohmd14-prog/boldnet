@@ -30,9 +30,10 @@ const HeroContent = () => {
     )
   }
 
-  const title = (heroContent?.title1?.[language] || heroContent?.title1 || '') + ' ' + (heroContent?.title2?.[language] || heroContent?.title2 || '');
-  const subtitle = heroContent?.tagline?.[language] || heroContent?.tagline;
-  const description = heroContent?.description?.[language] || heroContent?.description;
+  const title = (heroContent?.title1?.[language] || heroContent?.title1?.en || '') + ' ' + (heroContent?.title2?.[language] || heroContent?.title2?.en || '');
+  const subtitle = heroContent?.tagline?.[language] || heroContent?.tagline?.en;
+  const description = heroContent?.description?.[language] || heroContent?.description?.en;
+
 
   return (
     <div className="space-y-6 text-center lg:text-left">
