@@ -122,6 +122,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: any }) => {
 
 export default function Testimonials() {
   const firestore = useFirestore();
+  const { language, t } = useLanguage();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -166,8 +167,8 @@ export default function Testimonials() {
     <section id="testimonials" className="bg-transparent text-white py-16 md:py-24">
       <div className="container mx-auto">
         <div className="text-center mb-12">
-            <span className="text-sm font-bold text-red-200 tracking-widest uppercase">Témoignages</span>
-            <h2 className="text-4xl md:text-5xl font-bold mt-2 font-headline">Ce que nos clients disent de nous</h2>
+            <span className="text-sm font-bold text-red-200 tracking-widest uppercase">{t('testimonials')}</span>
+            <h2 className="text-4xl md:text-5xl font-bold mt-2 font-headline">{t('whatOurClientsSay')}</h2>
         </div>
 
         <Carousel 
@@ -208,3 +209,5 @@ export default function Testimonials() {
     </section>
   );
 }
+
+    

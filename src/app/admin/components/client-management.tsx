@@ -32,9 +32,13 @@ import Image from 'next/image';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLanguage } from '@/app/context/language-context';
+
+const defaultLang = { en: '', fr: '' };
 
 function ClientForm({ clientToEdit, onComplete, clientsCount }: { clientToEdit?: any, onComplete: () => void, clientsCount: number }) {
-  const [name, setName] = useState(clientToEdit?.name || '');
+  const [name, setName] = useState(clientToEdit?.name || defaultLang);
   const [logoUrl, setLogoUrl] = useState(clientToEdit?.logoUrl || '');
   const [websiteUrl, setWebsiteUrl] = useState(clientToEdit?.websiteUrl || '');
   const firestore = useFirestore();
@@ -46,11 +50,11 @@ function ClientForm({ clientToEdit, onComplete, clientsCount }: { clientToEdit?:
   );
 
   const handleAction = async () => {
-    if (!name || !logoUrl) {
+    if (!name.fr || !name.en || !logoUrl) {
       toast({
         variant: 'destructive',
         title: 'Missing Information',
-        description: 'Please provide a name and a logo URL.',
+        description: 'Please provide a name in both languages and a logo URL.',
       });
       return;
     }
@@ -60,10 +64,10 @@ function ClientForm({ clientToEdit, onComplete, clientsCount }: { clientToEdit?:
     if (clientToEdit) {
       const docRef = doc(firestore, 'clients', clientToEdit.id);
       await updateDoc(docRef, clientData);
-      toast({ title: 'Client Updated', description: `${name} has been successfully updated.` });
+      toast({ title: 'Client Updated', description: `${name.en} has been successfully updated.` });
     } else {
       await addDocumentNonBlocking(clientsCollection, { ...clientData, order: clientsCount });
-      toast({ title: 'Client Added', description: `${name} has been successfully added.` });
+      toast({ title: 'Client Added', description: `${name.en} has been successfully added.` });
     }
     
     onComplete();
@@ -79,13 +83,29 @@ function ClientForm({ clientToEdit, onComplete, clientsCount }: { clientToEdit?:
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="name">Client Name</Label>
-          <Input
-            id="name"
-            placeholder="Acme Inc."
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+            <Label htmlFor="name">Client Name</Label>
+            <Tabs defaultValue="fr" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="fr">Français</TabsTrigger>
+                    <TabsTrigger value="en">English</TabsTrigger>
+                </TabsList>
+                <TabsContent value="fr">
+                    <Input
+                        id="name-fr"
+                        placeholder="Nom du client"
+                        value={name.fr}
+                        onChange={(e) => setName(prev => ({...prev, fr: e.target.value}))}
+                    />
+                </TabsContent>
+                <TabsContent value="en">
+                    <Input
+                        id="name-en"
+                        placeholder="Client Name"
+                        value={name.en}
+                        onChange={(e) => setName(prev => ({...prev, en: e.target.value}))}
+                    />
+                </TabsContent>
+            </Tabs>
         </div>
         <ImageUpload 
             label="Client Logo"
@@ -117,15 +137,17 @@ function ClientForm({ clientToEdit, onComplete, clientsCount }: { clientToEdit?:
 function SortableClientItem({ client, onEdit, onDelete }: { client: any; onEdit: () => void; onDelete: () => void; }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({id: client.id});
     const style = { transform: CSS.Transform.toString(transform), transition };
+    const { language } = useLanguage();
+    const clientName = client.name?.[language] || client.name?.en;
 
     return (
         <Card ref={setNodeRef} style={style} className="flex items-center gap-4 p-4 touch-none">
             <button {...attributes} {...listeners} className="cursor-grab p-2 -ml-2">
                 <GripVertical className="h-5 w-5 text-muted-foreground" />
             </button>
-            <Image src={client.logoUrl} alt={client.name} width={40} height={40} className="rounded-md object-contain" />
+            <Image src={client.logoUrl} alt={clientName} width={40} height={40} className="rounded-md object-contain" />
             <div className="flex-1">
-                <p className="font-semibold">{client.name}</p>
+                <p className="font-semibold">{clientName}</p>
                 {client.websiteUrl && (
                     <a href={client.websiteUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:underline">
                         {client.websiteUrl}
@@ -145,7 +167,8 @@ export default function ClientManagement() {
     const { toast } = useToast();
     const [editingClient, setEditingClient] = useState<any | null>(null);
     const [isFormVisible, setIsFormVisible] = useState(false);
-    const [clientToDelete, setClientToDelete] = useState<{id: string; name: string} | null>(null);
+    const [clientToDelete, setClientToDelete] = useState<{id: string; name: { en: string, fr: string }} | null>(null);
+    const { language } = useLanguage();
 
     const clientsCollection = useMemoFirebase(
         () => collection(firestore, 'clients'),
@@ -165,7 +188,7 @@ export default function ClientManagement() {
         if (!clientToDelete) return;
         try {
           await deleteDoc(doc(firestore, 'clients', clientToDelete.id));
-          toast({ title: 'Client Deleted', description: `"${clientToDelete.name}" has been removed.` });
+          toast({ title: 'Client Deleted', description: `"${clientToDelete.name?.[language] || clientToDelete.name?.en}" has been removed.` });
         } catch (error) {
           toast({ variant: 'destructive', title: 'Error', description: 'Could not delete the client.' });
           console.error("Error deleting client:", error);
@@ -259,7 +282,7 @@ export default function ClientManagement() {
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete the
-                    <span className="font-semibold"> {clientToDelete?.name} </span> 
+                    <span className="font-semibold"> {clientToDelete?.name?.[language] || clientToDelete?.name?.en} </span> 
                     client.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -274,3 +297,5 @@ export default function ClientManagement() {
         </>
     );
 }
+
+    

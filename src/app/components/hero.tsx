@@ -30,10 +30,9 @@ const HeroContent = () => {
     )
   }
 
-  const title = (heroContent?.title1?.[language] || heroContent?.title1?.en || '') + ' ' + (heroContent?.title2?.[language] || heroContent?.title2?.en || '');
-  const subtitle = heroContent?.tagline?.[language] || heroContent?.tagline?.en;
-  const description = heroContent?.description?.[language] || heroContent?.description?.en;
-
+  const title = (heroContent?.title1?.[language] || heroContent?.title1?.en || t('heroTitleLine1')) + ' ' + (heroContent?.title2?.[language] || heroContent?.title2?.en || t('heroTitleLine2'));
+  const subtitle = heroContent?.tagline?.[language] || heroContent?.tagline?.en || t('heroSubtitle');
+  const description = heroContent?.description?.[language] || heroContent?.description?.en || t('heroDescriptionV2');
 
   return (
     <div className="space-y-6 text-center lg:text-left">
@@ -42,13 +41,13 @@ const HeroContent = () => {
         </div>
         
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-headline leading-normal tracking-normal text-white">
-            {title || t('heroTitleV2')}
+            {title}
         </h1>
 
         <p className="text-xl md:text-2xl text-red-100/90 max-w-2xl mx-auto lg:mx-0">
-            {subtitle || t('heroSubtitleV2')}
+            {subtitle}
         </p>
-        <div className="text-lg text-red-100/70 max-w-xl mx-auto lg:mx-0" dangerouslySetInnerHTML={{ __html: description || t('heroDescriptionV2') }} />
+        <div className="text-lg text-red-100/70 max-w-xl mx-auto lg:mx-0" dangerouslySetInnerHTML={{ __html: description }} />
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
         <Button asChild size="lg" className="rounded-full px-8 py-6 text-lg bg-white text-red-700 hover:bg-white/90 font-bold">
@@ -77,3 +76,5 @@ export default function Hero() {
     </section>
   );
 }
+
+    

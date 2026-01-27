@@ -9,7 +9,7 @@ import { useLanguage } from '../context/language-context';
 
 export default function TeamSection() {
   const firestore = useFirestore();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   
   const teamQuery = useMemoFirebase(
     () => query(collection(firestore, 'team_members'), orderBy('order')),
@@ -82,10 +82,10 @@ export default function TeamSection() {
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tight sm:text-5xl font-headline text-white">
-              Notre Équipe
+              {t('ourTeam')}
             </h2>
             <p className="max-w-[900px] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-white/80">
-              Rencontrez les experts qui donnent vie à vos projets.
+              {t('ourTeamDescription')}
             </p>
           </div>
         </div>
@@ -96,3 +96,5 @@ export default function TeamSection() {
     </section>
   );
 }
+
+    

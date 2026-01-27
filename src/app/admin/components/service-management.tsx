@@ -41,9 +41,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { IconSelect } from '@/components/ui/icon-select';
 import { ImageUpload } from '@/components/ui/image-upload';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useLanguage } from '@/app/context/language-context';
 
+const defaultLang = { en: '', fr: '' };
 
-function DescriptionEditorModal({ value, onChange, onOpenChange }: { value: string, onChange: (value: string) => void, onOpenChange: (open: boolean) => void }) {
+function DescriptionEditorModal({ value, onChange, onOpenChange }: { value: typeof defaultLang, onChange: (value: typeof defaultLang) => void, onOpenChange: (open: boolean) => void }) {
     const [localValue, setLocalValue] = useState(value);
 
     const handleSave = () => {
@@ -57,11 +60,18 @@ function DescriptionEditorModal({ value, onChange, onOpenChange }: { value: stri
                 <DialogHeader>
                     <DialogTitle>Edit Description</DialogTitle>
                     <DialogDescription>
-                        Modify the service description using the rich text editor.
+                        Modify the service description using the rich text editor for both languages.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex-grow min-h-0">
-                   <RichTextEditor content={localValue} onChange={setLocalValue} />
+                   <Tabs defaultValue="fr" className="h-full flex flex-col">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="fr">Français</TabsTrigger>
+                            <TabsTrigger value="en">English</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="fr" className="flex-grow h-0"><RichTextEditor content={localValue.fr} onChange={(val) => setLocalValue(p => ({...p, fr: val}))} /></TabsContent>
+                        <TabsContent value="en" className="flex-grow h-0"><RichTextEditor content={localValue.en} onChange={(val) => setLocalValue(p => ({...p, en: val}))} /></TabsContent>
+                    </Tabs>
                 </div>
                 <DialogFooter>
                     <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
@@ -73,9 +83,9 @@ function DescriptionEditorModal({ value, onChange, onOpenChange }: { value: stri
 }
 
 function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, onComplete: () => void }) {
-  const [name, setName] = useState(serviceToEdit?.name || '');
+  const [name, setName] = useState(serviceToEdit?.name || defaultLang);
   const [slug, setSlug] = useState(serviceToEdit?.slug || '');
-  const [description, setDescription] = useState(serviceToEdit?.description || '');
+  const [description, setDescription] = useState(serviceToEdit?.description || defaultLang);
   const [iconName, setIconName] = useState(serviceToEdit?.iconName || '');
   const [iconUrl, setIconUrl] = useState(serviceToEdit?.iconUrl || '');
   const [imageUrl, setImageUrl] = useState(serviceToEdit?.imageUrl || '');
@@ -83,6 +93,7 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
   const firestore = useFirestore();
   const { toast } = useToast();
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const { language } = useLanguage();
 
   const landingPagesCollection = useMemoFirebase(() => collection(firestore, 'landing_pages'), [firestore]);
   const { data: landingPages } = useCollection(landingPagesCollection);
@@ -94,11 +105,11 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
   );
 
   const handleUpload = async () => {
-    if (!name || !description || !slug) {
+    if (!name.en || !name.fr || !description.en || !description.fr || !slug) {
       toast({
         variant: 'destructive',
         title: 'Missing Information',
-        description: 'Please provide a name, slug, and a description.',
+        description: 'Please provide a name and description in both languages, and a slug.',
       });
       return;
     }
@@ -109,19 +120,12 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
     if (serviceToEdit) {
       const docRef = doc(firestore, 'services', serviceToEdit.id);
       await updateDoc(docRef, serviceData);
-      toast({ title: 'Service Updated', description: `${name} has been successfully updated.` });
+      toast({ title: 'Service Updated', description: `${name.en} has been successfully updated.` });
     } else {
       await addDocumentNonBlocking(servicesCollection, serviceData);
-      toast({ title: 'Service Added', description: `${name} has been successfully added.` });
+      toast({ title: 'Service Added', description: `${name.en} has been successfully added.` });
     }
 
-    setName('');
-    setDescription('');
-    setSlug('');
-    setIconName('');
-    setIconUrl('');
-    setImageUrl('');
-    setLandingPageId('');
     onComplete();
   };
   
@@ -131,25 +135,39 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
         <CardHeader>
           <CardTitle>{serviceToEdit ? 'Edit Service' : 'Add New Service'}</CardTitle>
           <CardDescription>
-            {serviceToEdit ? `Editing the service: ${serviceToEdit.name}` : 'Add a new service offered by your agency.'}
+            {serviceToEdit ? `Editing the service: ${serviceToEdit.name[language]}` : 'Add a new service offered by your agency.'}
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Service Name</Label>
-              <Input
-                id="name"
-                placeholder="e.g., UGC Videos"
-                value={name}
-                onChange={(e) => {
-                  const newName = e.target.value;
-                  setName(newName);
-                  if (!serviceToEdit?.slug) { // Only auto-update slug for new services
-                    setSlug(newName.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''));
-                  }
-                }}
-              />
+                <Label>Service Name</Label>
+                <Tabs defaultValue="fr" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="fr">Français</TabsTrigger>
+                        <TabsTrigger value="en">English</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="fr">
+                        <Input
+                            placeholder="ex: Vidéos UGC"
+                            value={name.fr}
+                            onChange={(e) => setName(prev => ({...prev, fr: e.target.value}))}
+                        />
+                    </TabsContent>
+                    <TabsContent value="en">
+                         <Input
+                            placeholder="e.g., UGC Videos"
+                            value={name.en}
+                            onChange={(e) => {
+                                const newName = e.target.value;
+                                setName(prev => ({...prev, en: newName}));
+                                if (!serviceToEdit?.slug) { 
+                                    setSlug(newName.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''));
+                                }
+                            }}
+                        />
+                    </TabsContent>
+                </Tabs>
             </div>
              <div className="grid gap-2">
               <Label htmlFor="slug">URL Slug</Label>
@@ -166,7 +184,7 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
             <Label>Description</Label>
             <div 
                 className="prose dark:prose-invert min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                dangerouslySetInnerHTML={{ __html: description || "<p class='text-muted-foreground'>Click edit to add a description.</p>"}}
+                dangerouslySetInnerHTML={{ __html: description[language] || "<p class='text-muted-foreground'>Click edit to add a description.</p>"}}
             />
             <Button variant="outline" size="sm" onClick={() => setIsEditingDescription(true)}>Edit Description</Button>
             
@@ -226,9 +244,10 @@ function ServiceUploader({ serviceToEdit, onComplete }: { serviceToEdit?: any, o
 export default function ServiceManagement() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const { language } = useLanguage();
   const [editingService, setEditingService] = useState<any | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [serviceToDelete, setServiceToDelete] = useState<{id: string; name: string} | null>(null);
+  const [serviceToDelete, setServiceToDelete] = useState<{id: string; name: {en: string, fr: string}} | null>(null);
 
   const servicesCollection = useMemoFirebase(
     () => collection(firestore, 'services'),
@@ -241,7 +260,7 @@ export default function ServiceManagement() {
     if (!serviceToDelete) return;
     try {
       await deleteDoc(doc(firestore, 'services', serviceToDelete.id));
-      toast({ title: 'Service Deleted', description: `"${serviceToDelete.name}" has been removed.` });
+      toast({ title: 'Service Deleted', description: `"${serviceToDelete.name[language]}" has been removed.` });
     } catch (error) {
       toast({ variant: 'destructive', title: 'Error', description: 'Could not delete the service.' });
       console.error("Error deleting service:", error);
@@ -304,10 +323,10 @@ export default function ServiceManagement() {
                 <TableBody>
                   {services.map((service) => (
                     <TableRow key={service.id}>
-                      <TableCell className="font-medium">{service.name}</TableCell>
+                      <TableCell className="font-medium">{service.name?.[language] || service.name?.en}</TableCell>
                        <TableCell className="text-muted-foreground">/services/{service.slug}</TableCell>
                       <TableCell className="text-muted-foreground max-w-sm truncate">
-                        {truncateText(service.description, 100)}
+                        {truncateText(service.description?.[language] || service.description?.en, 100)}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button variant="ghost" size="icon" onClick={() => handleEdit(service)}>
@@ -335,7 +354,7 @@ export default function ServiceManagement() {
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              <span className="font-semibold"> {serviceToDelete?.name} </span> 
+              <span className="font-semibold"> {serviceToDelete?.name?.[language] || serviceToDelete?.name?.en} </span> 
               service.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -350,4 +369,5 @@ export default function ServiceManagement() {
     </>
   );
 }
+
     

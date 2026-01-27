@@ -136,6 +136,7 @@
   "submissionDeletedMessage": "Submission from \"{0}\" has been removed.",
   "submissionDeleteError": "Could not delete the submission.",
   "testimonials": "Testimonials",
+  "whatOurClientsSay": "What Our Clients Say About Us",
   "team": "Team",
   "blog": "Blog",
   "portfolio": "Portfolio",
@@ -143,3 +144,5 @@
   "heroSubtitleV2": "More Leads. More Sales. Real Growth.",
   "heroDescriptionV2": "We build marketing systems that generate qualified leads, convert them and help scale without limits."
 }
+
+    

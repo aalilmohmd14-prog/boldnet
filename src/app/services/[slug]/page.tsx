@@ -59,8 +59,8 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
       return null;
     }
     
-    const serviceName = service.name?.[language] || service.name;
-    const serviceDescription = service.description?.[language] || service.description;
+    const serviceName = service.name?.[language] || service.name?.en;
+    const serviceDescription = service.description?.[language] || service.description?.en;
 
     return (
       <>
@@ -95,7 +95,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                     <Button asChild size="lg">
                         <Link href="/quote">
                             {t('requestAQuote')}
-                            <ArrowRight className="ml-2 h-5 w-5" />
+                            <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                     </Button>
                 </div>
@@ -116,3 +116,5 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
     </div>
   );
 }
+
+    
