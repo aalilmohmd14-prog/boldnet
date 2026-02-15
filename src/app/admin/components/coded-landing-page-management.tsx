@@ -33,6 +33,31 @@ export default function CodedLandingPageManagement() {
         toast({variant: 'destructive', title: 'Error creating coded page'});
     }
   }
+  
+  const handleAddUgcOfferPage = async () => {
+    const pageExists = pages?.some(p => p.slug === 'ugc-offer');
+    if (pageExists) {
+        toast({
+            variant: 'destructive',
+            title: 'Page already exists',
+            description: 'The UGC Offer page has already been added.',
+        });
+        return;
+    }
+    
+    try {
+        const newPageData = {
+            title: `UGC Offer Page`,
+            slug: `ugc-offer`,
+            createdAt: serverTimestamp(),
+        };
+        await addDocumentNonBlocking(codedPagesCollection, newPageData);
+        toast({ title: 'UGC Offer Page Added', description: 'You can now see it in the list.' });
+    } catch(e) {
+        console.error(e);
+        toast({variant: 'destructive', title: 'Error creating coded page'});
+    }
+  }
 
   const handleDelete = async () => {
     if (!deletingPage) return;
@@ -99,7 +124,8 @@ export default function CodedLandingPageManagement() {
             <CardTitle>Coded Landing Pages</CardTitle>
             <CardDescription>Manage metadata for manually coded pages.</CardDescription>
           </div>
-           <div className="flex gap-2">
+           <div className="flex gap-2 flex-wrap">
+            <Button onClick={handleAddUgcOfferPage}><Plus className="mr-2 h-4 w-4" /> Add UGC Offer Page</Button>
             <Button onClick={handleAddPersonalBrandingPage}><Plus className="mr-2 h-4 w-4" /> Add Personal Branding Page</Button>
             <Button onClick={handleAddNew} disabled><Plus className="mr-2 h-4 w-4" /> Add New</Button>
           </div>
