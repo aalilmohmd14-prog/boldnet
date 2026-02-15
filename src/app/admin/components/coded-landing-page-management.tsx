@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
 import PersonalBrandingManagement from './personal-branding-management';
+import UgcOfferManagement from './ugc-offer-management';
 
 export default function CodedLandingPageManagement() {
   const firestore = useFirestore();
@@ -104,15 +105,19 @@ export default function CodedLandingPageManagement() {
   }
 
   const handleEdit = (page: any) => {
-    if (page.slug === 'personal-branding') {
+    if (page.slug === 'personal-branding' || page.slug === 'ugc-offer') {
         setEditingPage(page);
     } else {
-        toast({ title: 'Not Editable', description: 'Only the Personal Branding page is editable for now.' });
+        toast({ title: 'Not Editable', description: 'Only the Personal Branding and UGC Offer pages are editable for now.' });
     }
   };
   
-  if (editingPage) {
+  if (editingPage?.slug === 'personal-branding') {
     return <PersonalBrandingManagement onBack={() => setEditingPage(null)} />
+  }
+
+  if (editingPage?.slug === 'ugc-offer') {
+    return <UgcOfferManagement onBack={() => setEditingPage(null)} />
   }
 
   return (
@@ -166,7 +171,7 @@ export default function CodedLandingPageManagement() {
                                         <LinkIcon className="h-4 w-4" />
                                         <span className="sr-only">Copy Link</span>
                                     </Button>
-                                    <Button variant="ghost" size="icon" onClick={() => handleEdit(page)} disabled={page.slug !== 'personal-branding'}>
+                                    <Button variant="ghost" size="icon" onClick={() => handleEdit(page)} disabled={page.slug !== 'personal-branding' && page.slug !== 'ugc-offer'}>
                                         <Edit2 className="h-4 w-4" />
                                         <span className="sr-only">Modifier</span>
                                     </Button>
@@ -199,3 +204,5 @@ export default function CodedLandingPageManagement() {
     </>
   );
 }
+
+    

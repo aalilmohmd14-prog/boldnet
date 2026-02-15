@@ -432,6 +432,7 @@
       "type": "object",
       "description": "Content for the Personal Branding landing page.",
       "properties": {
+        "sectionOrder": { "type": "array", "items": { "type": "string" } },
         "hero": {
           "type": "object",
           "properties": {
@@ -571,6 +572,125 @@
         }
       }
     },
+    "UgcOfferPage": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "UgcOfferPage",
+        "type": "object",
+        "description": "Content for the UGC Offer landing page.",
+        "properties": {
+          "sectionOrder": { "type": "array", "items": { "type": "string" } },
+          "hero": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "backgroundImageUrl": { "type": "string", "format": "uri" }
+            }
+          },
+          "problem": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "subtitle": { "type": "string" },
+              "mainImageUrl": { "type": "string", "format": "uri" },
+              "metrics": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "iconName": { "type": "string" },
+                    "label": { "type": "string" }
+                  }
+                }
+              },
+              "ctaButtonText": { "type": "string" }
+            }
+          },
+          "checklist": {
+            "type": "object",
+            "properties": {
+              "introText": { "type": "string" },
+              "positiveListItems": { "type": "array", "items": { "type": "string" } },
+              "costIntroText": { "type": "string" },
+              "costListItems": { "type": "array", "items": { "type": "string" } },
+              "mainImageUrl": { "type": "string", "format": "uri" }
+            }
+          },
+          "painPoint": {
+            "type": "object",
+            "properties": {
+              "subtitle": { "type": "string" },
+              "title": { "type": "string" },
+              "mainImageUrl": { "type": "string", "format": "uri" },
+              "painPoints": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "focus": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "mainPoint": { "type": "string" },
+              "features": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "iconName": { "type": "string" },
+                    "label": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "mainImageUrl": { "type": "string", "format": "uri" },
+              "mainText": { "type": "string" }
+            }
+          },
+          "timeline": {
+            "type": "object",
+            "properties": {
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "stepNumber": { "type": "string" },
+                    "text": { "type": "string" }
+                  }
+                }
+              },
+              "conclusionText": { "type": "string" }
+            }
+          },
+          "weDoEverything": {
+            "type": "object",
+            "properties": {
+              "mainImageUrl": { "type": "string", "format": "uri" },
+              "title": { "type": "string" },
+              "listItems": { "type": "array", "items": { "type": "string" } },
+              "ctaButtonText": { "type": "string" },
+              "ctaSubtitle": { "type": "string" }
+            }
+          },
+          "goals": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "goals": { "type": "array", "items": { "type": "string" } },
+              "conclusionText": { "type": "string" }
+            }
+          },
+          "contact": {
+              "type": "object",
+              "properties": {
+                  "title": { "type": "string" },
+                  "subtitle": { "type": "string" }
+              }
+          }
+        }
+      },
     "Testimonial": {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Testimonial",
@@ -918,6 +1038,22 @@
             "$ref": "#/backend/entities/PersonalBrandingPage"
           },
           "description": "Stores content for the Personal Branding landing page. Publicly readable, admin write.",
+          "params": [
+            {
+              "name": "pageId",
+              "description": "Should be a single document, e.g., 'main'."
+            }
+          ]
+        }
+      },
+       {
+        "path": "/ugc_offer_pages/{pageId}",
+        "definition": {
+          "entityName": "UgcOfferPage",
+          "schema": {
+            "$ref": "#/backend/entities/UgcOfferPage"
+          },
+          "description": "Stores content for the UGC Offer landing page. Publicly readable, admin write.",
           "params": [
             {
               "name": "pageId",

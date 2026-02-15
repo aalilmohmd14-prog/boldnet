@@ -19,6 +19,7 @@
  * - /landing_pages/{landingPageId}: Publicly readable, admin-writable landing pages.
  * - /coded_landing_pages/{codedLandingPageId}: Admin-only landing page metadata.
  * - /personal_branding_pages/{pageId}: Publicly readable, admin-writable content for the personal branding page.
+ * - /ugc_offer_pages/{pageId}: Publicly readable, admin-writable content for the UGC offer page.
  * - /testimonials/{testimonialId}: Publicly readable client testimonials.
  * - /team_members/{memberId}: Publicly readable team member information.
  * - /blog_posts/{postId}: Publicly readable blog posts.
@@ -163,6 +164,15 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+     /**
+     * @description Manages content for the UGC Offer landing page.
+     * @path /ugc_offer_pages/{pageId}
+     */
+    match /ugc_offer_pages/{pageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     /**
      * @description Manages client testimonials.
      * @path /testimonials/{testimonialId}
@@ -218,3 +228,5 @@ service cloud.firestore {
     }
   }
 }
+
+    
