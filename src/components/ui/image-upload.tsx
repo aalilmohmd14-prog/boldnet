@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -130,24 +129,29 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio, cr
       <div className="w-full">
         {url ? (
           <div className="space-y-4">
-            <div className="relative group w-full h-40 rounded-md overflow-hidden border border-input bg-muted/20">
-                <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
-                    <div 
-                        className="relative w-full h-full transition-transform duration-200"
-                        style={{ 
-                            transform: `scale(${zoom}) translate(${x}px, ${y}px)`,
-                            width: `${layoutScale * 100}%`,
-                            height: `${layoutScale * 100}%`,
-                            left: `${layoutX}px`,
-                            top: `${layoutY}px`
-                        }}
-                    >
-                        <Image src={url} alt="Uploaded" layout="fill" objectFit="contain" />
+            <div className="relative group w-full h-48 rounded-md border border-input bg-muted/20 flex items-center justify-center overflow-hidden">
+                {/* Visualizer for layout transformation - No overflow hidden here to show the scale properly */}
+                <div 
+                    className="relative transition-all duration-200"
+                    style={{ 
+                        transform: `translate(${layoutX}px, ${layoutY}px) scale(${layoutScale})`,
+                    }}
+                >
+                    {/* The "Frame" - This represents the element's bounds on the site */}
+                    <div className="w-32 h-32 relative overflow-hidden rounded-md border bg-background shadow-sm">
+                        <div 
+                            className="relative w-full h-full transition-transform duration-200"
+                            style={{ 
+                                transform: `scale(${zoom}) translate(${x}px, ${y}px)`,
+                            }}
+                        >
+                            <Image src={url} alt="Uploaded" fill className="object-contain" />
+                        </div>
                     </div>
                 </div>
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                <Button type="button" variant="secondary" size="icon" onClick={() => setIsPreviewOpen(true)} title="Aperçu"><Eye className="h-4 w-4" /></Button>
-                <Button type="button" variant="destructive" size="icon" onClick={clearImage} title="Supprimer"><X className="h-4 w-4" /></Button>
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20">
+                    <Button type="button" variant="secondary" size="icon" onClick={() => setIsPreviewOpen(true)} title="Aperçu"><Eye className="h-4 w-4" /></Button>
+                    <Button type="button" variant="destructive" size="icon" onClick={clearImage} title="Supprimer"><X className="h-4 w-4" /></Button>
                 </div>
             </div>
 
@@ -184,7 +188,7 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio, cr
                             <TabsContent value="layout" className="space-y-6 pt-4">
                                 <div className="space-y-3">
                                     <Label className="text-xs flex items-center gap-2"><LayoutGrid className="h-3 w-3" /> Taille sur le site ({(layoutScale * 100).toFixed(0)}%)</Label>
-                                    <Slider value={[layoutScale]} min={0.1} max={2} step={0.05} onValueChange={(v) => updateStyling({ layoutScale: v[0] })} />
+                                    <Slider value={[layoutScale]} min={0.1} max={3} step={0.05} onValueChange={(v) => updateStyling({ layoutScale: v[0] })} />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
@@ -236,14 +240,12 @@ export function ImageUpload({ value, onChange, label, className, aspectRatio, cr
               <div 
                 className="relative w-full h-full"
                 style={{ 
-                    transform: `scale(${zoom}) translate(${x}px, ${y}px)`,
-                    width: `${layoutScale * 100}%`,
-                    height: `${layoutScale * 100}%`,
-                    left: `${layoutX}px`,
-                    top: `${layoutY}px`
+                    transform: `translate(${layoutX}px, ${layoutY}px) scale(${layoutScale})`,
                 }}
               >
-                <Image src={url} alt="Aperçu" layout="fill" objectFit="contain" />
+                <div className="relative w-full h-full" style={{ transform: `scale(${zoom}) translate(${x}px, ${y}px)` }}>
+                    <Image src={url} alt="Aperçu" layout="fill" objectFit="contain" />
+                </div>
               </div>
             </div>
           </DialogContent>

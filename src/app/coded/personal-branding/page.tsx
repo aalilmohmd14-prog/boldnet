@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,17 +35,16 @@ const ImageContainer = ({ styledImg, alt, className, aspect = "aspect-square" }:
     if (!styledImg.url) return <div className={cn("bg-muted rounded-xl", aspect, className)} />;
     
     return (
-        <div className={cn("relative overflow-hidden rounded-xl", aspect, className)}>
-            <div 
-                className="relative w-full h-full transition-all duration-300"
-                style={{ 
-                    transform: `scale(${styledImg.layoutScale}) translate(${styledImg.layoutX}px, ${styledImg.layoutY}px)`,
-                    width: '100%',
-                    height: '100%'
-                }}
-            >
+        <div 
+            className="relative transition-all duration-300"
+            style={{ 
+                transform: `translate(${styledImg.layoutX}px, ${styledImg.layoutY}px) scale(${styledImg.layoutScale})`,
+                zIndex: (styledImg.layoutScale > 1 || styledImg.layoutX !== 0 || styledImg.layoutY !== 0) ? 10 : 1
+            }}
+        >
+            <div className={cn("relative overflow-hidden rounded-xl", aspect, className)}>
                 <div 
-                    className="relative w-full h-full"
+                    className="relative w-full h-full transition-transform duration-300"
                     style={{ transform: `scale(${styledImg.zoom}) translate(${styledImg.x}px, ${styledImg.y}px)` }}
                 >
                     <Image src={styledImg.url} alt={alt} fill className="object-cover" />
@@ -63,9 +61,9 @@ const HeroSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => 
             <div className="absolute inset-0 z-0">
                 {bg.url && (
                     <div 
-                        className="relative w-full h-full"
+                        className="relative w-full h-full transition-all duration-300"
                         style={{ 
-                            transform: `scale(${bg.layoutScale}) translate(${bg.layoutX}px, ${bg.layoutY}px)`,
+                            transform: `translate(${bg.layoutX}px, ${bg.layoutY}px) scale(${bg.layoutScale})`,
                         }}
                     >
                         <div 
@@ -112,7 +110,7 @@ const ProfessionsSection = ({ content }: { content: any }) => {
                     <div 
                         className="relative w-full h-full"
                         style={{ 
-                            transform: `scale(${bg.layoutScale}) translate(${bg.layoutX}px, ${bg.layoutY}px)` 
+                            transform: `translate(${bg.layoutX}px, ${bg.layoutY}px) scale(${bg.layoutScale})` 
                         }}
                     >
                         <div 
@@ -178,7 +176,7 @@ const ExpertiseSection = ({ content }: { content: any }) => {
                     <div 
                         className="relative w-full h-full opacity-30"
                         style={{ 
-                            transform: `scale(${bg.layoutScale}) translate(${bg.layoutX}px, ${bg.layoutY}px)`
+                            transform: `translate(${bg.layoutX}px, ${bg.layoutY}px) scale(${bg.layoutScale})`
                         }}
                     >
                         <div 
@@ -219,12 +217,12 @@ const BeneficiariesSection = ({ content, onCtaClick }: { content: any, onCtaClic
                             <div key={index} className="relative">
                                 <ImageContainer styledImg={img} alt={item.name} aspect="aspect-[3/2]" className="shadow-lg" />
                                 <div 
-                                    className="absolute top-4 left-4 bg-red-600 text-white font-bold text-lg px-6 py-2 rounded-lg"
+                                    className="absolute top-4 left-4 bg-red-600 text-white font-bold text-lg px-6 py-2 rounded-lg z-20"
                                     style={{ clipPath: 'polygon(0 0, 100% 0, 100% 75%, 85% 100%, 0 100%)' }}
                                 >
                                     {item.name}
                                 </div>
-                                <div className="absolute bottom-4 right-4 md:max-w-[60%] sm:max-w-[90%] w-[calc(100%-2rem)] md:w-auto bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md">
+                                <div className="absolute bottom-4 right-4 md:max-w-[60%] sm:max-w-[90%] w-[calc(100%-2rem)] md:w-auto bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md z-20">
                                     <p className="text-gray-700 text-sm md:text-base">{item.description}</p>
                                 </div>
                             </div>
@@ -254,7 +252,7 @@ const ResultsSection = ({ content, onCtaClick }: { content: any, onCtaClick: () 
                 <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-12 relative">
                     <div className="relative z-10">
                         <div className="text-center mb-4"><span className="font-bold text-xl rounded-full px-6 py-2 bg-black text-white inline-block shadow-lg">{content?.withoutTitle || "Avant Boldnet"}</span></div>
-                        <Card className="bg-black/20 p-6 rounded-lg border border-red-500 text-center h-full overflow-hidden">
+                        <Card className="bg-black/20 p-6 rounded-lg border border-red-500 text-center h-full">
                             <CardContent className="p-0 mt-4 space-y-4 text-red-200">
                                 {(content?.withoutItems || []).map((item: string, i: number) => <p key={i} className="text-lg">{item}</p>)}
                                 <ImageContainer styledImg={imgWithout} alt="Sans Marque" aspect="aspect-video" className="mt-4" />
@@ -263,7 +261,7 @@ const ResultsSection = ({ content, onCtaClick }: { content: any, onCtaClick: () 
                     </div>
                     <div className="relative z-10">
                         <div className="text-center mb-4"><span className="font-bold text-xl rounded-full px-6 py-2 bg-white text-red-600 inline-block shadow-lg">{content?.withTitle || "Après Boldnet"}</span></div>
-                        <Card className="bg-white/90 p-6 rounded-lg text-gray-800 text-center h-full overflow-hidden">
+                        <Card className="bg-white/90 p-6 rounded-lg text-gray-800 text-center h-full">
                             <CardContent className="p-0 mt-4 space-y-2">
                                 {(content?.withItems || []).map((item: string, i: number) => <p key={i} className="text-lg">✓ {item}</p>)}
                                 <ImageContainer styledImg={imgWith} alt="Avec Marque" aspect="aspect-video" className="mt-4" />
@@ -294,22 +292,8 @@ const MethodSection = ({ content, onCtaClick }: { content: any, onCtaClick: () =
                                 <div className="absolute -top-6 right-4 w-12 h-12 bg-red-600 text-white flex items-center justify-center rounded-full text-xl font-bold z-10">{index + 1}</div>
                                 <div className="flex flex-col md:flex-row gap-6 items-center">
                                     {img.url && (
-                                        <div className="w-full md:w-40 flex-shrink-0 aspect-video md:aspect-square relative rounded-lg overflow-hidden bg-muted">
-                                            <div 
-                                                className="relative w-full h-full transition-all duration-300"
-                                                style={{ 
-                                                    transform: `scale(${img.layoutScale}) translate(${img.layoutX}px, ${img.layoutY}px)`,
-                                                    width: '100%',
-                                                    height: '100%'
-                                                }}
-                                            >
-                                                <div 
-                                                    className="relative w-full h-full"
-                                                    style={{ transform: `scale(${img.zoom}) translate(${img.x}px, ${img.y}px)` }}
-                                                >
-                                                    <Image src={img.url} alt={step.title} fill className="object-contain" />
-                                                </div>
-                                            </div>
+                                        <div className="w-full md:w-40 flex-shrink-0">
+                                            <ImageContainer styledImg={img} alt={step.title} aspect="aspect-square" className="rounded-lg shadow-md" />
                                         </div>
                                     )}
                                     <div className={cn("flex-grow", !img.url && "text-center")}>
@@ -384,9 +368,9 @@ const FinalCtaSection = ({ content }: { content: any }) => {
             <div className="absolute inset-0 z-0">
                 {bg.url && (
                     <div 
-                        className="relative w-full h-full opacity-20" 
+                        className="relative w-full h-full opacity-20 transition-all duration-300" 
                         style={{ 
-                            transform: `scale(${bg.layoutScale}) translate(${bg.layoutX}px, ${bg.layoutY}px)`
+                            transform: `translate(${bg.layoutX}px, ${bg.layoutY}px) scale(${bg.layoutScale})`
                         }}
                     >
                         <div 

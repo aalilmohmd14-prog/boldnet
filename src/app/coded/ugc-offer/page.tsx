@@ -1,4 +1,3 @@
-
 'use client';
 
 import { ArrowLeft, CheckCircle, ChevronDown, Plus, MousePointerClick, RefreshCw, CircleDollarSign, TrendingUp, UserPlus, Film, Bot, PenSquare, Camera, Lamp, Users, PenTool, Link as LinkIcon } from 'lucide-react';
@@ -41,18 +40,17 @@ const ImageDisplay = ({ styledImg, alt, className, aspect = "aspect-square" }: {
     if (!styledImg.url) return <div className={cn("bg-muted", aspect, className)} />;
     
     return (
-        <div className={cn("relative overflow-hidden", aspect, className)}>
-            <div 
-                className="relative w-full h-full transition-all duration-300"
-                style={{ 
-                    transform: `scale(${styledImg.layoutScale}) translate(${styledImg.layoutX}px, ${styledImg.layoutY}px)`,
-                    width: '100%',
-                    height: '100%'
-                }}
-            >
+        <div 
+            className="relative transition-all duration-300"
+            style={{ 
+                transform: `translate(${styledImg.layoutX || 0}px, ${styledImg.layoutY || 0}px) scale(${styledImg.layoutScale || 1})`,
+                zIndex: (styledImg.layoutScale > 1 || styledImg.layoutX !== 0 || styledImg.layoutY !== 0) ? 10 : 1
+            }}
+        >
+            <div className={cn("relative overflow-hidden", aspect, className)}>
                 <div 
-                    className="relative w-full h-full"
-                    style={{ transform: `scale(${styledImg.zoom}) translate(${styledImg.x}px, ${styledImg.y}px)` }}
+                    className="relative w-full h-full transition-transform duration-300"
+                    style={{ transform: `scale(${styledImg.zoom || 1}) translate(${styledImg.x || 0}px, ${styledImg.y || 0}px)` }}
                 >
                     <Image src={styledImg.url} alt={alt} fill className="object-cover" />
                 </div>
@@ -67,9 +65,9 @@ const HeroSection = ({ content }: { content: any }) => {
         <Section className="bg-gray-900 text-white text-center !py-0 relative h-[50vh] md:h-[60vh] overflow-hidden">
             {bg.url && (
                 <div 
-                    className="absolute inset-0 opacity-30 pointer-events-none"
+                    className="absolute inset-0 opacity-30 transition-all duration-300"
                     style={{ 
-                        transform: `scale(${bg.layoutScale}) translate(${bg.layoutX}px, ${bg.layoutY}px)`,
+                        transform: `translate(${bg.layoutX}px, ${bg.layoutY}px) scale(${bg.layoutScale})`,
                     }}
                 >
                     <div 
@@ -94,7 +92,9 @@ const ProblemSection = ({ content }: { content: any }) => {
         <Section className="bg-white">
             <div className="text-center">
                 <div className="flex flex-col md:flex-row justify-center items-center gap-6">
-                    <ImageDisplay styledImg={img} alt="Problem" className="w-[150px] h-[150px] rounded-full" />
+                    <div className="w-[150px] h-[150px] flex-shrink-0">
+                        <ImageDisplay styledImg={img} alt="Problem" className="rounded-full shadow-lg" aspect="aspect-square" />
+                    </div>
                     <div>
                         <h2 className="text-red-600 text-4xl md:text-6xl font-bold font-headline">{content?.title || "..."}</h2>
                         <p className="max-w-md mx-auto mt-2 text-gray-600">{content?.subtitle || "..."}</p>
@@ -127,7 +127,9 @@ const ChecklistSection = ({ content }: { content: any }) => {
                     <p className="text-lg">{content?.costIntroText || "..."}</p>
                     <ul className="space-y-3">{(content?.costListItems || []).map((item: string, i: number) => <li key={i} className="flex items-center gap-3"><ChevronDown className="h-5 w-5" /> {item}</li>)}</ul>
                 </div>
-                <ImageDisplay styledImg={img} alt="Checklist" className="w-full max-w-[500px] mx-auto rounded-full" aspect="aspect-square" />
+                <div className="w-full max-w-[500px] mx-auto">
+                    <ImageDisplay styledImg={img} alt="Checklist" className="rounded-full shadow-2xl" aspect="aspect-square" />
+                </div>
             </div>
         </Section>
     );
@@ -142,7 +144,7 @@ const PainPointSection = ({ content }: { content: any }) => {
                 <SectionTitle className="text-red-600">{content?.title || "..."}</SectionTitle>
             </div>
             <div className="grid md:grid-cols-2 gap-12 items-center">
-                <ImageDisplay styledImg={img} alt="Pain point" className="w-full rounded-lg" aspect="aspect-[4/3]" />
+                <ImageDisplay styledImg={img} alt="Pain point" className="rounded-lg shadow-xl" aspect="aspect-[4/3]" />
                 <div className="space-y-4">
                     {(content?.painPoints || []).map((point: string, i: number) => (
                         <Card key={i} className="p-4 bg-red-50 border-red-200"><p>{point}</p></Card>
@@ -158,7 +160,7 @@ const MetaSection = ({ content }: { content: any }) => {
     return (
         <Section className="bg-white">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-                <ImageDisplay styledImg={img} alt="Meta" className="w-full rounded-lg" aspect="aspect-[16/9]" />
+                <ImageDisplay styledImg={img} alt="Meta" className="rounded-lg shadow-xl" aspect="aspect-[16/9]" />
                 <div className="text-center">
                     <Bot className="w-20 h-20 mx-auto text-blue-600 mb-4" />
                     <p className="bg-red-600 text-white p-6 rounded-lg text-lg leading-relaxed">{content?.mainText || "..."}</p>
@@ -173,7 +175,9 @@ const WeDoEverythingSection = ({ content }: { content: any }) => {
     return (
         <Section className="bg-red-100">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-                <ImageDisplay styledImg={img} alt="We Do Everything" className="w-full max-w-[500px] mx-auto rounded-lg" aspect="aspect-square" />
+                <div className="w-full max-w-[500px] mx-auto">
+                    <ImageDisplay styledImg={img} alt="We Do Everything" className="rounded-lg shadow-xl" aspect="aspect-square" />
+                </div>
                 <div className="bg-white p-8 rounded-lg shadow-lg">
                     <h2 className="text-2xl font-bold text-red-600 font-headline mb-4">{content?.title || "..."}</h2>
                     <ul className="space-y-3 text-gray-700">{(content?.listItems || []).map((item: string, i: number) => <li key={i} className="flex gap-2"><span>✓</span> {item}</li>)}</ul>
