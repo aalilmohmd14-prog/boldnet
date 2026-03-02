@@ -18,70 +18,92 @@ const SectionTitle = ({ children, className }: { children: React.ReactNode, clas
   <h2 className={cn("text-3xl md:text-4xl font-bold text-center font-headline", className)}>{children}</h2>
 );
 
-const HeroSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => (
-  <section id="hero" className="relative w-full flex items-center justify-center py-20 min-h-screen text-white overflow-hidden bg-black">
-    <div className="absolute inset-0 z-0">
-        <Image
-            src={content?.backgroundImageUrl || "https://picsum.photos/seed/hero-bg/1200/800"}
-            alt="Background"
-            fill
-            className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-red-900/50 to-transparent"></div>
-    </div>
-    <div className="relative z-10 container mx-auto flex flex-col items-center justify-center text-center px-4">
-      <div 
-        className="mb-6 relative"
-        style={{ 
-            width: content?.logoSize || 96, 
-            height: content?.logoSize || 96 
-        }}
-      >
-        {content?.logoSvg ? (
-          <div className="w-full h-full text-white" dangerouslySetInnerHTML={{ __html: content.logoSvg }} />
-        ) : (
-          <SiteLogo />
-        )}
-      </div>
-      <h1 className="text-4xl md:text-6xl font-extrabold font-headline leading-tight tracking-wider uppercase">
-        {content?.title || "On ne crée pas de personal brands"}
-      </h1>
-      <p className="mt-4 text-xl md:text-2xl max-w-3xl font-light">
-        {content?.subtitle || "On crée la plateforme qui va permettre à votre présence d'être une institution qui vend pour vous."}
-      </p>
-      <Button onClick={onCtaClick} size="lg" className="mt-8 rounded-full bg-white text-red-600 hover:bg-gray-200 font-bold text-lg px-10 py-6">
-        {content?.ctaButtonText || "MA CONSULTATION GRATUITE"} <ArrowRight className="ml-2 h-5 w-5" />
-      </Button>
-    </div>
-  </section>
-);
+const getStyledImage = (img: any) => {
+    if (typeof img === 'string') return { url: img, zoom: 1, x: 0, y: 0 };
+    return { url: img?.url || '', zoom: img?.zoom ?? 1, x: img?.x ?? 0, y: img?.y ?? 0 };
+};
 
-const ProfessionsSection = ({ content }: { content: any }) => (
-    <section id="team" className="py-16 md:py-24 relative">
-         {content?.backgroundImageUrl && (
-            <Image
-                src={content.backgroundImageUrl}
-                alt="Professions background"
-                fill
-                className="object-cover z-0 opacity-10"
-            />
-        )}
-        <div className="container mx-auto px-4 relative z-10">
-            <SectionTitle className="text-red-600">
-                {content?.title || "Vous êtes expert dans votre domaine:"}
-            </SectionTitle>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 mt-12 max-w-4xl mx-auto">
-                {(content?.professions || []).map((p: any, index: number) => (
-                    <div key={index} className="relative aspect-[3/4] rounded-xl overflow-hidden shadow-xl group">
-                        <Image src={p.image || "https://picsum.photos/seed/prof${index}/300/400"} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                        <h3 className="absolute bottom-4 left-4 text-white font-bold text-xl drop-shadow-md">{p.name}</h3>
+const HeroSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => {
+    const bg = getStyledImage(content?.backgroundImageUrl);
+    return (
+        <section id="hero" className="relative w-full flex items-center justify-center py-20 min-h-screen text-white overflow-hidden bg-black">
+            <div className="absolute inset-0 z-0">
+                {bg.url && (
+                    <div 
+                        className="relative w-full h-full"
+                        style={{ transform: `scale(${bg.zoom}) translate(${bg.x}px, ${bg.y}px)` }}
+                    >
+                        <Image src={bg.url} alt="Background" fill className="object-cover" />
                     </div>
-                ))}
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-red-900/50 to-transparent"></div>
             </div>
-        </div>
-    </section>
-);
+            <div className="relative z-10 container mx-auto flex flex-col items-center justify-center text-center px-4">
+            <div 
+                className="mb-6 relative"
+                style={{ width: content?.logoSize || 96, height: content?.logoSize || 96 }}
+            >
+                {content?.logoSvg ? (
+                <div className="w-full h-full text-white" dangerouslySetInnerHTML={{ __html: content.logoSvg }} />
+                ) : (
+                <SiteLogo />
+                )}
+            </div>
+            <h1 className="text-4xl md:text-6xl font-extrabold font-headline leading-tight tracking-wider uppercase">
+                {content?.title || "On ne crée pas de personal brands"}
+            </h1>
+            <p className="mt-4 text-xl md:text-2xl max-w-3xl font-light">
+                {content?.subtitle || "On crée la plateforme qui va permettre à votre présence d'être une institution qui vend pour vous."}
+            </p>
+            <Button onClick={onCtaClick} size="lg" className="mt-8 rounded-full bg-white text-red-600 hover:bg-gray-200 font-bold text-lg px-10 py-6">
+                {content?.ctaButtonText || "MA CONSULTATION GRATUITE"} <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            </div>
+        </section>
+    );
+};
+
+const ProfessionsSection = ({ content }: { content: any }) => {
+    const bg = getStyledImage(content?.backgroundImageUrl);
+    return (
+        <section id="team" className="py-16 md:py-24 relative overflow-hidden">
+            <div className="absolute inset-0 z-0 opacity-10">
+                {bg.url && (
+                    <div 
+                        className="relative w-full h-full"
+                        style={{ transform: `scale(${bg.zoom}) translate(${bg.x}px, ${bg.y}px)` }}
+                    >
+                        <Image src={bg.url} alt="Professions background" fill className="object-cover" />
+                    </div>
+                )}
+            </div>
+            <div className="container mx-auto px-4 relative z-10">
+                <SectionTitle className="text-red-600">{content?.title || "Vous êtes expert dans votre domaine:"}</SectionTitle>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 mt-12 max-w-4xl mx-auto">
+                    {(content?.professions || []).map((p: any, index: number) => {
+                        const img = getStyledImage(p.image);
+                        return (
+                            <div key={index} className="relative aspect-[3/4] rounded-xl overflow-hidden shadow-xl group">
+                                <div className="absolute inset-0">
+                                    {img.url && (
+                                        <div 
+                                            className="relative w-full h-full transition-transform duration-300 group-hover:brightness-110"
+                                            style={{ transform: `scale(${img.zoom}) translate(${img.x}px, ${img.y}px)` }}
+                                        >
+                                            <Image src={img.url} alt={p.name} fill className="object-cover" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                                <h3 className="absolute bottom-4 left-4 text-white font-bold text-xl drop-shadow-md">{p.name}</h3>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </section>
+    );
+};
 
 const ProblemSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => (
     <section id="problem" className="py-16 md:py-24 bg-red-700 text-white">
@@ -109,25 +131,30 @@ const ProblemSection = ({ content, onCtaClick }: { content: any, onCtaClick: () 
     </section>
 );
 
-const ExpertiseSection = ({ content }: { content: any }) => (
-    <section id="expertise" className="relative py-24 md:py-32 bg-gray-800 text-white">
-        <div className="absolute inset-0 z-0">
-            <Image
-                src={content?.backgroundImageUrl || "https://picsum.photos/seed/expertise/1200/500"}
-                alt="Expertise background"
-                fill
-                className="object-cover opacity-30"
-            />
-            <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative z-10 container mx-auto px-4 text-center">
-            <p className="text-xl md:text-2xl font-light">{content?.title || "C'est ainsi que nous faisons de vous:"}</p>
-            <h2 className="mt-4 text-3xl md:text-5xl font-extrabold font-headline flex items-center justify-center gap-6">
-                <span className="tracking-wider">{content?.subtitle || "l'expert incontournable dans votre domaine"}</span>
-            </h2>
-        </div>
-    </section>
-);
+const ExpertiseSection = ({ content }: { content: any }) => {
+    const bg = getStyledImage(content?.backgroundImageUrl);
+    return (
+        <section id="expertise" className="relative py-24 md:py-32 bg-gray-800 text-white overflow-hidden">
+            <div className="absolute inset-0 z-0">
+                {bg.url && (
+                    <div 
+                        className="relative w-full h-full opacity-30"
+                        style={{ transform: `scale(${bg.zoom}) translate(${bg.x}px, ${bg.y}px)` }}
+                    >
+                        <Image src={bg.url} alt="Expertise background" fill className="object-cover" />
+                    </div>
+                )}
+                <div className="absolute inset-0 bg-black/50" />
+            </div>
+            <div className="relative z-10 container mx-auto px-4 text-center">
+                <p className="text-xl md:text-2xl font-light">{content?.title || "C'est ainsi que nous faisons de vous:"}</p>
+                <h2 className="mt-4 text-3xl md:text-5xl font-extrabold font-headline flex items-center justify-center gap-6">
+                    <span className="tracking-wider">{content?.subtitle || "l'expert incontournable dans votre domaine"}</span>
+                </h2>
+            </div>
+        </section>
+    );
+};
 
 const BeneficiariesSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => {
     if (!content?.items?.length) return null;
@@ -141,140 +168,144 @@ const BeneficiariesSection = ({ content, onCtaClick }: { content: any, onCtaClic
                     <div className="h-px flex-grow bg-red-200"></div>
                 </div>
                 <div className="space-y-12 max-w-2xl mx-auto">
-                    {(content.items || []).map((item: any, index: number) => (
-                        <div key={index} className="relative">
-                            <div className="relative rounded-2xl overflow-hidden shadow-lg">
-                                 <Image 
-                                    src={item.imageUrl || "https://picsum.photos/seed/beneficiary/600/400"}
-                                    alt={item.name}
-                                    width={600}
-                                    height={400}
-                                    className="w-full object-cover"
-                                 />
+                    {(content.items || []).map((item: any, index: number) => {
+                        const img = getStyledImage(item.imageUrl);
+                        return (
+                            <div key={index} className="relative">
+                                <div className="relative rounded-2xl overflow-hidden shadow-lg aspect-[3/2] bg-muted">
+                                    {img.url && (
+                                        <div 
+                                            className="relative w-full h-full"
+                                            style={{ transform: `scale(${img.zoom}) translate(${img.x}px, ${img.y}px)` }}
+                                        >
+                                            <Image src={img.url} alt={item.name} fill className="object-cover" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div 
+                                    className="absolute top-4 left-4 bg-red-600 text-white font-bold text-lg px-6 py-2 rounded-lg"
+                                    style={{ clipPath: 'polygon(0 0, 100% 0, 100% 75%, 85% 100%, 0 100%)' }}
+                                >
+                                    {item.name}
+                                </div>
+                                <div className="absolute bottom-4 right-4 md:max-w-[60%] sm:max-w-[90%] w-[calc(100%-2rem)] md:w-auto bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md">
+                                    <p className="text-gray-700 text-sm md:text-base">{item.description}</p>
+                                </div>
                             </div>
-                            <div 
-                                className="absolute top-4 left-4 bg-red-600 text-white font-bold text-lg px-6 py-2 rounded-lg"
-                                style={{ clipPath: 'polygon(0 0, 100% 0, 100% 75%, 85% 100%, 0 100%)' }}
-                            >
-                                {item.name}
-                            </div>
-                            <div className="absolute bottom-4 right-4 md:max-w-[60%] sm:max-w-[90%] w-[calc(100%-2rem)] md:w-auto bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md">
-                                <p className="text-gray-700 text-sm md:text-base">{item.description}</p>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
-                {(content.conclusion || content.ctaButtonText) && (
-                    <div className="text-center mt-12 max-w-2xl mx-auto">
-                        {content.conclusion && (
-                            <p className="text-lg font-semibold text-red-600">{content.conclusion}</p>
-                        )}
-                        {content.ctaButtonText && (
-                             <Button onClick={onCtaClick} size="lg" className="rounded-full bg-red-600 text-white hover:bg-red-700 font-bold text-lg px-10 py-6 mt-6">
-                                {content.ctaButtonText} <ArrowRight className="ml-2 h-5 w-5" />
-                            </Button>
-                        )}
-                    </div>
-                )}
+                <div className="text-center mt-12 max-w-2xl mx-auto">
+                    {content.conclusion && <p className="text-lg font-semibold text-red-600">{content.conclusion}</p>}
+                    {content.ctaButtonText && (
+                        <Button onClick={onCtaClick} size="lg" className="rounded-full bg-red-600 text-white hover:bg-red-700 font-bold text-lg px-10 py-6 mt-6">
+                            {content.ctaButtonText} <ArrowRight className="ml-2 h-5 w-5" />
+                        </Button>
+                    )}
+                </div>
             </div>
         </section>
     );
 };
 
-const ResultsSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => (
-    <section id="results" className="py-16 md:py-24 bg-red-700 text-white">
-        <div className="container mx-auto px-4">
-            <SectionTitle className="mb-16">{content?.title || "LES RÉSULTATS?"}</SectionTitle>
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-12 relative">
-                {/* Connecting Lines */}
-                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-[calc(100%-8rem)] h-20 border-t-2 border-l-2 border-r-2 border-white/50 rounded-t-full hidden md:block"></div>
-                <div className="absolute top-[6.5rem] left-1/4 h-[calc(100%-12rem)] w-px bg-white/50 hidden md:block"></div>
-                <div className="absolute top-[6.5rem] right-1/4 h-[calc(100%-12rem)] w-px bg-white/50 hidden md:block"></div>
-
-
-                <div className="relative z-10">
-                    <div className="text-center mb-4">
-                        <span className="font-bold text-xl rounded-full px-6 py-2 bg-black text-white inline-block shadow-lg">{content?.withoutTitle || "Avant Boldnet"}</span>
-                    </div>
-                    <Card className="bg-black/20 p-6 rounded-lg border border-red-500 text-center h-full">
-                        <CardContent className="p-0 mt-4 space-y-4 text-red-200">
-                             {(content?.withoutItems || []).map((item: string, i: number) => <p key={i} className="text-lg">{item}</p>)}
-                            <div className="relative aspect-video mt-4 rounded-lg overflow-hidden">
-                                <Image src={content?.withoutImage || "https://picsum.photos/seed/sans-marque/400/225"} alt="Sans Marque" layout="fill" className="object-cover" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                 <div className="relative z-10">
-                    <div className="text-center mb-4">
-                        <span className="font-bold text-xl rounded-full px-6 py-2 bg-white text-red-600 inline-block shadow-lg">{content?.withTitle || "Après Boldnet"}</span>
-                    </div>
-                     <Card className="bg-white/90 p-6 rounded-lg text-gray-800 text-center h-full">
-                        <CardContent className="p-0 mt-4 space-y-2">
-                            {(content?.withItems || []).map((item: string, i: number) => <p key={i} className="text-lg">✓ {item}</p>)}
-                             <div className="relative aspect-video mt-4 rounded-lg overflow-hidden">
-                                <Image src={content?.withImage || "https://picsum.photos/seed/avec-marque/400/225"} alt="Avec Marque" layout="fill" className="object-cover" />
-                                <div className="absolute top-2 right-2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center">
-                                    <SiteLogo />
+const ResultsSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => {
+    const imgWithout = getStyledImage(content?.withoutImage);
+    const imgWith = getStyledImage(content?.withImage);
+    return (
+        <section id="results" className="py-16 md:py-24 bg-red-700 text-white">
+            <div className="container mx-auto px-4">
+                <SectionTitle className="mb-16">{content?.title || "LES RÉSULTATS?"}</SectionTitle>
+                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-12 relative">
+                    <div className="relative z-10">
+                        <div className="text-center mb-4"><span className="font-bold text-xl rounded-full px-6 py-2 bg-black text-white inline-block shadow-lg">{content?.withoutTitle || "Avant Boldnet"}</span></div>
+                        <Card className="bg-black/20 p-6 rounded-lg border border-red-500 text-center h-full overflow-hidden">
+                            <CardContent className="p-0 mt-4 space-y-4 text-red-200">
+                                {(content?.withoutItems || []).map((item: string, i: number) => <p key={i} className="text-lg">{item}</p>)}
+                                <div className="relative aspect-video mt-4 rounded-lg overflow-hidden bg-black/20">
+                                    {imgWithout.url && (
+                                        <div 
+                                            className="relative w-full h-full"
+                                            style={{ transform: `scale(${imgWithout.zoom}) translate(${imgWithout.x}px, ${imgWithout.y}px)` }}
+                                        >
+                                            <Image src={imgWithout.url} alt="Sans Marque" fill className="object-cover" />
+                                        </div>
+                                    )}
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="relative z-10">
+                        <div className="text-center mb-4"><span className="font-bold text-xl rounded-full px-6 py-2 bg-white text-red-600 inline-block shadow-lg">{content?.withTitle || "Après Boldnet"}</span></div>
+                        <Card className="bg-white/90 p-6 rounded-lg text-gray-800 text-center h-full overflow-hidden">
+                            <CardContent className="p-0 mt-4 space-y-2">
+                                {(content?.withItems || []).map((item: string, i: number) => <p key={i} className="text-lg">✓ {item}</p>)}
+                                <div className="relative aspect-video mt-4 rounded-lg overflow-hidden bg-muted">
+                                    {imgWith.url && (
+                                        <div 
+                                            className="relative w-full h-full"
+                                            style={{ transform: `scale(${imgWith.zoom}) translate(${imgWith.x}px, ${imgWith.y}px)` }}
+                                        >
+                                            <Image src={imgWith.url} alt="Avec Marque" fill className="object-cover" />
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
-                <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 w-10 h-10 bg-white text-red-600 rounded-full flex items-center justify-center font-bold text-sm hidden md:flex">VS</div>
+                <div className="max-w-4xl mx-auto text-center mt-20">
+                    <p className="font-bold text-xl md:text-2xl"><span className="bg-white text-red-600 px-3 py-1 rounded-md">Bonus:</span> {content?.bonus || "Votre impact grandit aussi."}</p>
+                    <Button onClick={onCtaClick} size="lg" className="mt-8 rounded-full bg-white text-red-600 hover:bg-gray-200 font-bold text-lg px-10 py-6">
+                        {content?.ctaButtonText || "COMMENÇONS!"} <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                </div>
             </div>
-
-            <div className="max-w-4xl mx-auto text-center mt-20">
-                <p className="font-bold text-xl md:text-2xl"><span className="bg-white text-red-600 px-3 py-1 rounded-md">Bonus:</span> {content?.bonus || "Votre impact grandit aussi. Plus de personnes profitent de votre expertise et de vos services."}</p>
-                <Button onClick={onCtaClick} size="lg" className="mt-8 rounded-full bg-white text-red-600 hover:bg-gray-200 font-bold text-lg px-10 py-6">
-                    {content?.ctaButtonText || "COMMENÇONS!"} <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-            </div>
-        </div>
-    </section>
-)
+        </section>
+    );
+};
 
 const MethodSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => {
     return (
         <section id="method" className="py-16 md:py-24 bg-[#fff4f2]">
             <div className="container mx-auto px-4">
                 <div className="space-y-8 max-w-4xl mx-auto">
-                    {(content?.steps || []).map((step: any, index: number) => (
-                        <Card key={index} className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg relative overflow-visible border-none">
-                             <div className="absolute -top-6 right-4 w-12 h-12 bg-red-600 text-white flex items-center justify-center rounded-full text-xl font-bold z-10">
-                                {index + 1}
-                            </div>
-                            <div className={cn("flex flex-col md:flex-row gap-6 items-center")}>
-                                {step.imageUrl && (
-                                    <div className="w-full md:w-24 md:w-40 flex-shrink-0">
-                                        <Image src={step.imageUrl} alt={step.title} width={400} height={300} className="rounded-lg object-contain"/>
-                                    </div>
-                                )}
-                                <div className={cn("flex-grow", !step.imageUrl && "text-center")}>
-                                    <h3 className="text-2xl font-bold font-headline text-red-600">{step.title}</h3>
-                                    
-                                    {step.description && <p className="mt-2 text-muted-foreground">{step.description}</p>}
-
-                                    {step.subSteps && step.subSteps.length > 0 && (
-                                        <div className={cn("grid gap-2 mt-6", "grid-cols-2 sm:grid-cols-3")}>
-                                            {step.subSteps.map((sub: any, subIndex: number) => (
-                                                <div key={subIndex} className="text-center p-2">
-                                                    <div className="w-12 h-12 mx-auto flex items-center justify-center">
-                                                        <DynamicIcon iconName={sub.iconName || 'PenTool'} className="w-8 h-8 text-red-600" />
-                                                    </div>
-                                                    <p className="mt-2 text-sm font-semibold text-gray-600">{sub.name}</p>
-                                                </div>
-                                            ))}
+                    {(content?.steps || []).map((step: any, index: number) => {
+                        const img = getStyledImage(step.imageUrl);
+                        return (
+                            <Card key={index} className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg relative overflow-visible border-none">
+                                <div className="absolute -top-6 right-4 w-12 h-12 bg-red-600 text-white flex items-center justify-center rounded-full text-xl font-bold z-10">{index + 1}</div>
+                                <div className="flex flex-col md:flex-row gap-6 items-center">
+                                    {img.url && (
+                                        <div className="w-full md:w-40 flex-shrink-0 aspect-video md:aspect-square relative rounded-lg overflow-hidden bg-muted">
+                                            <div 
+                                                className="relative w-full h-full"
+                                                style={{ transform: `scale(${img.zoom}) translate(${img.x}px, ${img.y}px)` }}
+                                            >
+                                                <Image src={img.url} alt={step.title} fill className="object-contain" />
+                                            </div>
                                         </div>
                                     )}
+                                    <div className={cn("flex-grow", !img.url && "text-center")}>
+                                        <h3 className="text-2xl font-bold font-headline text-red-600">{step.title}</h3>
+                                        {step.description && <p className="mt-2 text-muted-foreground">{step.description}</p>}
+                                        {step.subSteps && step.subSteps.length > 0 && (
+                                            <div className="grid gap-2 mt-6 grid-cols-2 sm:grid-cols-3">
+                                                {step.subSteps.map((sub: any, subIndex: number) => (
+                                                    <div key={subIndex} className="text-center p-2">
+                                                        <div className="w-12 h-12 mx-auto flex items-center justify-center"><DynamicIcon iconName={sub.iconName || 'PenTool'} className="w-8 h-8 text-red-600" /></div>
+                                                        <p className="mt-2 text-sm font-semibold text-gray-600">{sub.name}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        </Card>
-                    ))}
+                            </Card>
+                        );
+                    })}
                 </div>
                  <div className="text-center mt-12 max-w-2xl mx-auto">
-                    <p className="text-lg font-semibold text-red-600">{content?.conclusion}</p>
+                    {content?.conclusion && <p className="text-lg font-semibold text-red-600">{content.conclusion}</p>}
                     <Button onClick={onCtaClick} size="lg" className="rounded-full bg-red-600 text-white hover:bg-red-700 font-bold text-lg px-10 py-6 mt-6">
                         {content?.ctaButtonText || "MA CONSULTATION GRATUITE"} <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
@@ -285,199 +316,84 @@ const MethodSection = ({ content, onCtaClick }: { content: any, onCtaClick: () =
 };
 
 const TimelineMethodSection = ({ content, onCtaClick }: { content: any, onCtaClick: () => void }) => {
-    const defaultSteps = [
-        { stepTitle: 'ÉTAPE 1', title: 'DÉCOUVERTE', description: 'On explore votre histoire.. vos objectifs et votre public.', iconName: 'Compass', position: 'right' },
-        { stepTitle: 'ÉTAPE 2', title: 'STRATÉGIE', description: 'On crée votre positionnement et votre contenu pour attirer les bons clients.', iconName: 'Target', position: 'left' },
-        { stepTitle: 'ÉTAPE 3', title: 'EXÉCUTION', description: 'Scénario.. tournage.. montage.. réseaux sociaux.. site web.. tout est fait pour vous.', iconName: 'Lightbulb', position: 'right' },
-        { stepTitle: 'ÉTAPE 4', title: 'RÉSULTATS', description: '• Visibilité\n• Prospects\n• Moins de pub\n• Plus de revenus\n• Votre réputation devient votre moteur.', iconName: 'BarChart3', position: 'left' },
-    ];
-    const steps = content?.steps?.length ? content.steps : defaultSteps;
-
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, amount: 0.2 });
     const controls = useAnimation();
-
-    useEffect(() => {
-        if (isInView) {
-            controls.start("visible");
-        }
-    }, [isInView, controls]);
-
-    const containerVariants = {
-        hidden: {},
-        visible: {
-            transition: {
-                staggerChildren: 0.3,
-            },
-        },
-    };
-
-    const itemVariants = {
-        hidden: {
-            opacity: 0,
-            y: 50,
-        },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.5,
-                ease: "easeOut",
-            },
-        },
-    };
-    
+    useEffect(() => { if (isInView) controls.start("visible"); }, [isInView, controls]);
+    const steps = content?.steps || [];
     return (
         <section id="timelineMethod" className="py-16 md:py-24 bg-red-700 text-white relative overflow-hidden">
-             <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '1.5rem 1.5rem' }}></div>
             <div className="container mx-auto px-4 relative z-10">
-                
-                <SectionTitle className="mb-4">{content?.title}</SectionTitle>
-                <div className="w-24 h-1 bg-white/50 mx-auto mb-16"></div>
-
+                <SectionTitle className="mb-16">{content?.title || "NOTRE PROCESSUS"}</SectionTitle>
                 <div ref={ref} className="relative max-w-2xl mx-auto">
-                    {/* The connecting line */}
                     <div className="absolute left-1/2 -translate-x-1/2 top-12 bottom-12 w-1 bg-white/20 rounded-full hidden md:block"></div>
-
-                    <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate={controls}
-                    >
+                    <motion.div variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.3 } } }} initial="hidden" animate={controls}>
                         {steps.map((step: any, index: number) => (
-                            <motion.div 
-                                key={index}
-                                variants={itemVariants}
-                                className={cn("flex items-center w-full mb-8 md:mb-0", step.position === 'right' ? 'justify-start' : 'justify-end')}
-                            >
+                            <motion.div key={index} variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } }} className={cn("flex items-center w-full mb-8 md:mb-0", step.position === 'right' ? 'justify-start' : 'justify-end')}>
                                 <div className={cn("flex md:w-1/2 items-center", step.position === 'right' ? 'flex-row' : 'flex-row-reverse')}>
-                                    {/* Icon Circle */}
-                                    <div className="relative z-10 flex-shrink-0">
-                                        <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg">
-                                            <DynamicIcon iconName={step.iconName || 'HelpCircle'} className="w-12 h-12 text-red-600" />
-                                        </div>
-                                    </div>
-                                    {/* Content */}
+                                    <div className="relative z-10 flex-shrink-0"><div className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg"><DynamicIcon iconName={step.iconName || 'Compass'} className="w-10 h-10 text-red-600" /></div></div>
                                     <div className={cn("p-4 w-full", step.position === 'right' ? 'text-left' : 'text-right')}>
-                                        <h3 className="font-bold text-lg uppercase tracking-wide">{step.stepTitle || `ÉTAPE ${index + 1}`}</h3>
-                                        <h4 className="font-bold text-xl uppercase text-red-200">{step.title}</h4>
-                                        <p className="mt-2 text-sm whitespace-pre-line">{step.description}</p>
+                                        <h3 className="font-bold text-sm uppercase tracking-wide opacity-70">{step.stepTitle}</h3>
+                                        <h4 className="font-bold text-lg uppercase text-red-200">{step.title}</h4>
+                                        <p className="mt-2 text-xs whitespace-pre-line">{step.description}</p>
                                     </div>
                                 </div>
                             </motion.div>
                         ))}
                     </motion.div>
                 </div>
-
                 <div className="text-center mt-12">
-                    <Button onClick={onCtaClick} size="lg" className="rounded-full bg-white text-red-600 hover:bg-gray-200 font-bold text-lg px-10 py-6">
-                        {content?.ctaButtonText || "EN SAVOIR PLUS"} <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
+                    <Button onClick={onCtaClick} size="lg" className="rounded-full bg-white text-red-600 hover:bg-gray-200 font-bold text-lg px-10 py-6">{content?.ctaButtonText || "EN SAVOIR PLUS"} <ArrowRight className="ml-2 h-5 w-5" /></Button>
                 </div>
             </div>
         </section>
-    )
-}
-
-const FinalCtaSection = ({ content }: { content: any }) => (
-    <section id="finalCta" className="relative py-24 md:py-32 bg-gray-900 text-white">
-         <div className="absolute inset-0 z-0">
-            <Image
-                src={content?.backgroundImageUrl || "https://picsum.photos/seed/final-cta/1200/400"}
-                alt="Office background"
-                fill
-                className="opacity-20 object-cover"
-            />
-        </div>
-        <div className="relative z-10 container mx-auto px-4 text-center">
-            <h2 className="text-4xl md:text-6xl font-extrabold font-headline uppercase tracking-wider">{content?.title || "Apparaître, Imposer, Attirer."}</h2>
-            <p className="mt-4 text-xl md:text-2xl font-light">{content?.subtitle || "Explose tes résultats maintenant."}</p>
-        </div>
-    </section>
-)
-
-const sectionComponents: Record<string, React.FC<any>> = {
-    hero: HeroSection,
-    team: ProfessionsSection,
-    problem: ProblemSection,
-    expertise: ExpertiseSection,
-    results: ResultsSection,
-    beneficiaries: BeneficiariesSection,
-    timelineMethod: TimelineMethodSection,
-    method: MethodSection,
-    finalCta: FinalCtaSection,
+    );
 };
 
-const DEFAULT_SECTION_ORDER = [
-    'hero',
-    'team',
-    'problem',
-    'expertise',
-    'results',
-    'beneficiaries',
-    'timelineMethod',
-    'method',
-    'finalCta',
-];
+const FinalCtaSection = ({ content }: { content: any }) => {
+    const bg = getStyledImage(content?.backgroundImageUrl);
+    return (
+        <section id="finalCta" className="relative py-24 md:py-32 bg-gray-900 text-white overflow-hidden">
+            <div className="absolute inset-0 z-0">
+                {bg.url && (
+                    <div className="relative w-full h-full opacity-20" style={{ transform: `scale(${bg.zoom}) translate(${bg.x}px, ${bg.y}px)` }}>
+                        <Image src={bg.url} alt="Office background" fill className="object-cover" />
+                    </div>
+                )}
+            </div>
+            <div className="relative z-10 container mx-auto px-4 text-center">
+                <h2 className="text-4xl md:text-6xl font-extrabold font-headline uppercase tracking-wider">{content?.title || "Apparaître, Imposer, Attirer."}</h2>
+                <p className="mt-4 text-xl md:text-2xl font-light">{content?.subtitle || "Explose tes résultats maintenant."}</p>
+            </div>
+        </section>
+    );
+};
+
+const sectionComponents: Record<string, React.FC<any>> = {
+    hero: HeroSection, team: ProfessionsSection, problem: ProblemSection, expertise: ExpertiseSection, results: ResultsSection, beneficiaries: BeneficiariesSection, timelineMethod: TimelineMethodSection, method: MethodSection, finalCta: FinalCtaSection,
+};
 
 function PersonalBrandingContent() {
     const firestore = useFirestore();
     const pageDocRef = useMemoFirebase(() => doc(firestore, 'personal_branding_pages', 'main'), [firestore]);
     const { data: pageContent, isLoading } = useDoc(pageDocRef);
     const [isFormOpen, setIsFormOpen] = useState(false);
-
     const handleOpenForm = () => setIsFormOpen(true);
-
     const sectionOrder = useMemo(() => pageContent?.sectionOrder || DEFAULT_SECTION_ORDER, [pageContent]);
+    const handleScrollTo = (sectionId: string) => { const element = document.getElementById(sectionId); if (element) element.scrollIntoView({ behavior: 'smooth' }); };
 
-    const handleScrollTo = (sectionId: string) => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      };
-
-    if (isLoading) {
-        return (
-            <div className="space-y-8">
-                <Skeleton className="h-screen w-full" />
-                <Skeleton className="h-96 w-full" />
-                <Skeleton className="h-96 w-full" />
-            </div>
-        )
-    }
+    if (isLoading) return <div className="space-y-8"><Skeleton className="h-screen w-full" /><Skeleton className="h-96 w-full" /></div>;
 
     return (
         <div className="bg-white">
           <main>
             {sectionOrder.map((sectionKey: string, index: number) => {
                 const Component = sectionComponents[sectionKey];
-                if (!Component || !pageContent?.[sectionKey]) {
-                    return null;
-                }
-                const content = pageContent[sectionKey];
-                
-                const nextSectionIndex = index + 1;
-                const nextSectionId = nextSectionIndex < sectionOrder.length ? sectionOrder[nextSectionIndex] : null;
-
-                let onCtaClick;
-
-                const formTriggerSections = ['beneficiaries', 'results', 'timelineMethod', 'method'];
-
-                if (formTriggerSections.includes(sectionKey)) {
-                    onCtaClick = handleOpenForm;
-                } else if (nextSectionId) {
-                    onCtaClick = () => handleScrollTo(nextSectionId);
-                } else {
-                    onCtaClick = handleOpenForm;
-                }
-                
-                // The FinalCtaSection is the only one without a CTA button.
-                if (sectionKey === 'finalCta' || sectionKey === 'team' || sectionKey === 'expertise') {
-                    return <Component key={sectionKey} content={content} />;
-                }
-                
-                return <Component key={sectionKey} content={content} onCtaClick={onCtaClick} />;
+                if (!Component || !pageContent?.[sectionKey]) return null;
+                const nextSectionId = index + 1 < sectionOrder.length ? sectionOrder[index + 1] : null;
+                let onCtaClick = ['beneficiaries', 'results', 'timelineMethod', 'method'].includes(sectionKey) ? handleOpenForm : (nextSectionId ? () => handleScrollTo(nextSectionId) : handleOpenForm);
+                if (['finalCta', 'team', 'expertise'].includes(sectionKey)) return <Component key={sectionKey} content={pageContent[sectionKey]} />;
+                return <Component key={sectionKey} content={pageContent[sectionKey]} onCtaClick={onCtaClick} />;
             })}
           </main>
           {isFormOpen && <PersonalBrandingContactForm onOpenChange={setIsFormOpen} />}
@@ -486,9 +402,5 @@ function PersonalBrandingContent() {
 }
 
 export default function PersonalBrandingPage() {
-    return (
-        <FirebaseClientProvider>
-            <PersonalBrandingContent />
-        </FirebaseClientProvider>
-    )
+    return <FirebaseClientProvider><PersonalBrandingContent /></FirebaseClientProvider>;
 }

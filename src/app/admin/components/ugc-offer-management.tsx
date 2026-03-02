@@ -138,105 +138,79 @@ export default function UgcOfferManagement({ onBack }: { onBack: () => void }) {
         handleFieldChange(section, listName, newList);
     };
 
-    if (isLoading) return <div className="space-y-4">
-        <Skeleton className="h-10 w-48" />
-        <Skeleton className="h-40 w-full" />
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-64 w-full" />
-    </div>;
+    if (isLoading) return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-40 w-full" /></div>;
 
     return (
         <div className="w-full max-w-4xl mx-auto flex flex-col gap-8">
             <div className="flex justify-between items-center">
-                 <Button onClick={onBack} variant="outline">Back to Coded Pages</Button>
-                 <Button onClick={() => handleSave()}>Save Page</Button>
+                 <Button onClick={onBack} variant="outline">Retour aux pages</Button>
+                 <Button onClick={() => handleSave()}>Enregistrer tout</Button>
             </div>
             
-            <DndSectionSorter
-                items={sectionItems}
-                onOrderChange={handleOrderChange}
-            />
+            <DndSectionSorter items={sectionItems} onOrderChange={handleOrderChange} />
            
-            <Accordion type="multiple" className="w-full" defaultValue={['item-hero']}>
-                <AccordionItem value="item-hero">
+            <Accordion type="multiple" className="w-full">
+                <AccordionItem value="hero">
                     <AccordionTrigger>{SECTION_CONFIG.hero.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Textarea value={formData.hero?.title} onChange={(e) => handleFieldChange('hero', 'title', e.target.value)} />
-                        </div>
-                        <ImageUpload label="Background Image" value={formData.hero?.backgroundImageUrl} onChange={(url) => handleFieldChange('hero', 'backgroundImageUrl', url)} />
+                        <Textarea label="Titre" value={formData.hero?.title} onChange={(e) => handleFieldChange('hero', 'title', e.target.value)} />
+                        <ImageUpload label="Image de fond" value={formData.hero?.backgroundImageUrl} onChange={(val) => handleFieldChange('hero', 'backgroundImageUrl', val)} enableStyling />
                     </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="item-problem">
+                <AccordionItem value="problem">
                     <AccordionTrigger>{SECTION_CONFIG.problem.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <div className="grid gap-2"><Label>Title</Label><Input value={formData.problem?.title} onChange={(e) => handleFieldChange('problem', 'title', e.target.value)} /></div>
-                        <div className="grid gap-2"><Label>Subtitle</Label><Input value={formData.problem?.subtitle} onChange={(e) => handleFieldChange('problem', 'subtitle', e.target.value)} /></div>
-                        <ImageUpload label="Main Image" value={formData.problem?.mainImageUrl} onChange={(url) => handleFieldChange('problem', 'mainImageUrl', url)} />
-                        <Label>Metrics</Label>
+                        <Input label="Titre" value={formData.problem?.title} onChange={(e) => handleFieldChange('problem', 'title', e.target.value)} />
+                        <Input label="Sous-titre" value={formData.problem?.subtitle} onChange={(e) => handleFieldChange('problem', 'subtitle', e.target.value)} />
+                        <ImageUpload label="Image Principale" value={formData.problem?.mainImageUrl} onChange={(val) => handleFieldChange('problem', 'mainImageUrl', val)} enableStyling />
+                        <Label>Métriques</Label>
                         {(formData.problem?.metrics || []).map((item: any, index: number) => (
-                            <Card key={index} className="p-2"><div className="flex gap-2 items-center">
+                            <div key={index} className="flex gap-2 items-center border p-2 rounded-md">
                                 <IconSelect value={item.iconName} onChange={(val) => handleObjectInListChange('problem', 'metrics', index, 'iconName', val)} />
                                 <Input placeholder="Label" value={item.label} onChange={(e) => handleObjectInListChange('problem', 'metrics', index, 'label', e.target.value)} />
                                 <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('problem', 'metrics', index)}><Trash2 className="w-4 h-4" /></Button>
-                            </div></Card>
+                            </div>
                         ))}
-                        <Button variant="outline" onClick={() => handleAddObjectInList('problem', 'metrics', { iconName: "TrendingUp", label: "" })}><Plus className="w-4 h-4 mr-2" /> Add Metric</Button>
-                        <div className="grid gap-2"><Label>CTA Button Text</Label><Input value={formData.problem?.ctaButtonText} onChange={(e) => handleFieldChange('problem', 'ctaButtonText', e.target.value)} /></div>
+                        <Button variant="outline" onClick={() => handleAddObjectInList('problem', 'metrics', { iconName: "TrendingUp", label: "" })}><Plus className="w-4 h-4 mr-2" /> Ajouter une métrique</Button>
                     </AccordionContent>
                 </AccordionItem>
 
-                 <AccordionItem value="item-checklist">
+                 <AccordionItem value="checklist">
                     <AccordionTrigger>{SECTION_CONFIG.checklist.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                         <div className="grid gap-2"><Label>Intro Text</Label><Textarea value={formData.checklist?.introText} onChange={(e) => handleFieldChange('checklist', 'introText', e.target.value)} /></div>
-                         <Label>Positive List</Label>
-                        {(formData.checklist?.positiveListItems || []).map((item: string, index: number) => (
-                            <div key={index} className="flex gap-2 items-center">
-                                <Input value={item} onChange={(e) => handleListItemChange('checklist', 'positiveListItems', index, e.target.value)} />
-                                <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('checklist', 'positiveListItems', index)}><Trash2 className="w-4 h-4" /></Button>
-                            </div>
-                        ))}
-                        <Button variant="outline" onClick={() => handleAddListItem('checklist', 'positiveListItems')}><Plus className="w-4 h-4 mr-2" />Add Item</Button>
-                         <div className="grid gap-2"><Label>Cost Intro Text</Label><Textarea value={formData.checklist?.costIntroText} onChange={(e) => handleFieldChange('checklist', 'costIntroText', e.target.value)} /></div>
-                          <Label>Cost List</Label>
-                        {(formData.checklist?.costListItems || []).map((item: string, index: number) => (
-                             <div key={index} className="flex gap-2 items-center">
-                                <Input value={item} onChange={(e) => handleListItemChange('checklist', 'costListItems', index, e.target.value)} />
-                                <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('checklist', 'costListItems', index)}><Trash2 className="w-4 h-4" /></Button>
-                            </div>
-                        ))}
-                        <Button variant="outline" onClick={() => handleAddListItem('checklist', 'costListItems')}><Plus className="w-4 h-4 mr-2" />Add Item</Button>
-                         <ImageUpload label="Main Image" value={formData.checklist?.mainImageUrl} onChange={(url) => handleFieldChange('checklist', 'mainImageUrl', url)} />
+                         <Textarea label="Texte d'intro" value={formData.checklist?.introText} onChange={(e) => handleFieldChange('checklist', 'introText', e.target.value)} />
+                         <ImageUpload label="Image Principale" value={formData.checklist?.mainImageUrl} onChange={(val) => handleFieldChange('checklist', 'mainImageUrl', val)} enableStyling />
                     </AccordionContent>
                 </AccordionItem>
                 
-                 <AccordionItem value="item-painPoint">
+                 <AccordionItem value="painPoint">
                     <AccordionTrigger>{SECTION_CONFIG.painPoint.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <div className="grid gap-2"><Label>Subtitle</Label><Input value={formData.painPoint?.subtitle} onChange={(e) => handleFieldChange('painPoint', 'subtitle', e.target.value)} /></div>
-                        <div className="grid gap-2"><Label>Title</Label><Input value={formData.painPoint?.title} onChange={(e) => handleFieldChange('painPoint', 'title', e.target.value)} /></div>
-                        <ImageUpload label="Main Image" value={formData.painPoint?.mainImageUrl} onChange={(url) => handleFieldChange('painPoint', 'mainImageUrl', url)} />
-                         <Label>Pain Points</Label>
-                        {(formData.painPoint?.painPoints || []).map((item: string, index: number) => (
-                             <div key={index} className="flex gap-2 items-center">
-                                <Input value={item} onChange={(e) => handleListItemChange('painPoint', 'painPoints', index, e.target.value)} />
-                                <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('painPoint', 'painPoints', index)}><Trash2 className="w-4 h-4" /></Button>
-                            </div>
-                        ))}
-                        <Button variant="outline" onClick={() => handleAddListItem('painPoint', 'painPoints')}><Plus className="w-4 h-4 mr-2" />Add Pain Point</Button>
+                        <Input label="Titre" value={formData.painPoint?.title} onChange={(e) => handleFieldChange('painPoint', 'title', e.target.value)} />
+                        <ImageUpload label="Image Principale" value={formData.painPoint?.mainImageUrl} onChange={(val) => handleFieldChange('painPoint', 'mainImageUrl', val)} enableStyling />
                     </AccordionContent>
                 </AccordionItem>
-                {/* Add other accordions for other sections here, following the same pattern */}
 
+                <AccordionItem value="meta">
+                    <AccordionTrigger>{SECTION_CONFIG.meta.label}</AccordionTrigger>
+                    <AccordionContent className="space-y-4 p-4">
+                        <ImageUpload label="Image Meta" value={formData.meta?.mainImageUrl} onChange={(val) => handleFieldChange('meta', 'mainImageUrl', val)} enableStyling />
+                        <Textarea label="Texte" value={formData.meta?.mainText} onChange={(e) => handleFieldChange('meta', 'mainText', e.target.value)} />
+                    </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="weDoEverything">
+                    <AccordionTrigger>{SECTION_CONFIG.weDoEverything.label}</AccordionTrigger>
+                    <AccordionContent className="space-y-4 p-4">
+                        <ImageUpload label="Image" value={formData.weDoEverything?.mainImageUrl} onChange={(val) => handleFieldChange('weDoEverything', 'mainImageUrl', val)} enableStyling />
+                        <Input label="Titre" value={formData.weDoEverything?.title} onChange={(e) => handleFieldChange('weDoEverything', 'title', e.target.value)} />
+                    </AccordionContent>
+                </AccordionItem>
             </Accordion>
             <div className="text-right mt-4">
-                 <Button onClick={() => handleSave()}>Save Page</Button>
+                 <Button onClick={() => handleSave()}>Enregistrer tout</Button>
             </div>
         </div>
     );
 }
-
-    

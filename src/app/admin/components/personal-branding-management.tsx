@@ -54,7 +54,6 @@ export default function PersonalBrandingManagement({ onBack }: { onBack: () => v
             setFormData(pageData);
             setSectionOrder(pageData.sectionOrder || DEFAULT_SECTION_ORDER);
         } else {
-            // Set default structure if no data exists
             setFormData({
                 hero: { title: "", subtitle: "", ctaButtonText: "", backgroundImageUrl: "", logoSvg: "", logoSize: 96},
                 team: { title: "", backgroundImage: "", professions: [] },
@@ -81,10 +80,10 @@ export default function PersonalBrandingManagement({ onBack }: { onBack: () => v
         const orderToSave = newOrder || sectionOrder;
         try {
             await setDoc(pageDocRef, { ...formData, sectionOrder: orderToSave }, { merge: true });
-            toast({ title: 'Page Saved', description: 'Personal Branding page content has been updated.' });
+            toast({ title: 'Page enregistrée', description: 'Le contenu de la page Personal Branding a été mis à jour.' });
         } catch (error) {
             console.error(error);
-            toast({ variant: 'destructive', title: 'Error', description: 'Could not save the page content.' });
+            toast({ variant: 'destructive', title: 'Erreur', description: 'Impossible d\'enregistrer la page.' });
         }
     };
     
@@ -171,68 +170,55 @@ export default function PersonalBrandingManagement({ onBack }: { onBack: () => v
     };
 
 
-    if (isLoading) return <p>Loading page content...</p>;
+    if (isLoading) return <p>Chargement du contenu...</p>;
 
     return (
         <div className="w-full max-w-4xl mx-auto flex flex-col gap-8">
             <div className="flex justify-between items-center">
-                 <Button onClick={onBack} variant="outline">Back to Coded Pages</Button>
-                 <Button onClick={() => handleSave()}>Save Page</Button>
+                 <Button onClick={onBack} variant="outline">Retour aux pages</Button>
+                 <Button onClick={() => handleSave()}>Enregistrer tout</Button>
             </div>
             
-            <DndSectionSorter
-                items={sectionItems}
-                onOrderChange={handleOrderChange}
-            />
+            <DndSectionSorter items={sectionItems} onOrderChange={handleOrderChange} />
            
             <Accordion type="single" collapsible className="w-full">
                 {/* Hero Section */}
-                <AccordionItem value="item-1">
+                <AccordionItem value="hero">
                     <AccordionTrigger>{SECTION_CONFIG.hero.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <ImageUpload label="Background Image" value={formData.hero?.backgroundImageUrl} onChange={(url) => handleFieldChange('hero', 'backgroundImageUrl', url)} />
+                        <ImageUpload label="Image de fond" value={formData.hero?.backgroundImageUrl} onChange={(val) => handleFieldChange('hero', 'backgroundImageUrl', val)} enableStyling />
                         <div className="grid gap-2">
-                            <Label>Logo SVG Code</Label>
-                            <Textarea 
-                                value={formData.hero?.logoSvg} 
-                                onChange={(e) => handleFieldChange('hero', 'logoSvg', e.target.value)} 
-                                placeholder="<svg>...</svg>"
-                                className="h-32 font-mono"
-                            />
+                            <Label>Code SVG du Logo</Label>
+                            <Textarea value={formData.hero?.logoSvg} onChange={(e) => handleFieldChange('hero', 'logoSvg', e.target.value)} placeholder="<svg>...</svg>" className="h-32 font-mono" />
                         </div>
                         <div className="grid gap-2">
-                            <Label>Logo Size (in pixels)</Label>
-                            <Input 
-                                type="number"
-                                value={formData.hero?.logoSize} 
-                                onChange={(e) => handleFieldChange('hero', 'logoSize', Number(e.target.value))} 
-                                placeholder="e.g., 96"
-                            />
+                            <Label>Taille du Logo (px)</Label>
+                            <Input type="number" value={formData.hero?.logoSize} onChange={(e) => handleFieldChange('hero', 'logoSize', Number(e.target.value))} />
                         </div>
                         <div className="grid gap-2">
-                            <Label>Title</Label>
+                            <Label>Titre</Label>
                             <Input value={formData.hero?.title} onChange={(e) => handleFieldChange('hero', 'title', e.target.value)} />
                         </div>
                         <div className="grid gap-2">
-                            <Label>Subtitle</Label>
+                            <Label>Sous-titre</Label>
                             <Textarea value={formData.hero?.subtitle} onChange={(e) => handleFieldChange('hero', 'subtitle', e.target.value)} />
                         </div>
                         <div className="grid gap-2">
-                            <Label>CTA Button Text</Label>
+                            <Label>Texte du Bouton CTA</Label>
                             <Input value={formData.hero?.ctaButtonText} onChange={(e) => handleFieldChange('hero', 'ctaButtonText', e.target.value)} />
                         </div>
                     </AccordionContent>
                 </AccordionItem>
                 
                 {/* Professions Section */}
-                <AccordionItem value="item-2">
+                <AccordionItem value="team">
                     <AccordionTrigger>{SECTION_CONFIG.team.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
                          <div className="grid gap-2">
-                            <Label>Title</Label>
+                            <Label>Titre</Label>
                             <Input value={formData.team?.title} onChange={(e) => handleFieldChange('team', 'title', e.target.value)} />
                         </div>
-                        <ImageUpload label="Background Image" value={formData.team?.backgroundImageUrl} onChange={(url) => handleFieldChange('team', 'backgroundImageUrl', url)} />
+                        <ImageUpload label="Image de fond" value={formData.team?.backgroundImageUrl} onChange={(val) => handleFieldChange('team', 'backgroundImageUrl', val)} enableStyling />
                         <Label>Professions</Label>
                         <div className="space-y-2">
                         {(formData.team?.professions || []).map((prof: any, index: number) => (
@@ -249,287 +235,100 @@ export default function PersonalBrandingManagement({ onBack }: { onBack: () => v
                                     </CardHeader>
                                     <CollapsibleContent>
                                         <CardContent className="pt-0 p-4 space-y-4">
-                                            <ImageUpload label={`Image ${index+1}`} value={prof.image} onChange={(url) => handleObjectInListChange('team', 'professions', index, 'image', url)} />
-                                            <Input placeholder="Name" value={prof.name} onChange={(e) => handleObjectInListChange('team', 'professions', index, 'name', e.target.value)} />
+                                            <ImageUpload label={`Image ${index+1}`} value={prof.image} onChange={(val) => handleObjectInListChange('team', 'professions', index, 'image', val)} enableStyling />
+                                            <Input placeholder="Nom" value={prof.name} onChange={(e) => handleObjectInListChange('team', 'professions', index, 'name', e.target.value)} />
                                         </CardContent>
                                     </CollapsibleContent>
                                 </Card>
                             </Collapsible>
                         ))}
                         </div>
-                        <Button variant="outline" onClick={() => handleAddObjectInList('team', 'professions', { name: "", image: "" })}><Plus className="w-4 h-4 mr-2" /> Add Profession</Button>
+                        <Button variant="outline" onClick={() => handleAddObjectInList('team', 'professions', { name: "", image: "" })}><Plus className="w-4 h-4 mr-2" /> Ajouter une profession</Button>
                     </AccordionContent>
                 </AccordionItem>
 
                  {/* Problem Section */}
-                <AccordionItem value="item-3">
+                <AccordionItem value="problem">
                     <AccordionTrigger>{SECTION_CONFIG.problem.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Input value={formData.problem?.title} onChange={(e) => handleFieldChange('problem', 'title', e.target.value)} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label>Main Point</Label>
-                            <Input value={formData.problem?.mainPoint} onChange={(e) => handleFieldChange('problem', 'mainPoint', e.target.value)} />
-                        </div>
-                        <Label>List Items</Label>
+                        <div className="grid gap-2"><Label>Titre</Label><Input value={formData.problem?.title} onChange={(e) => handleFieldChange('problem', 'title', e.target.value)} /></div>
+                        <div className="grid gap-2"><Label>Point Principal</Label><Input value={formData.problem?.mainPoint} onChange={(e) => handleFieldChange('problem', 'mainPoint', e.target.value)} /></div>
+                        <Label>Liste des problèmes</Label>
                         {(formData.problem?.listItems || []).map((item: string, index: number) => (
                             <div key={index} className="flex gap-2 items-center">
                                 <Input value={item} onChange={(e) => handleListItemChange('problem', 'listItems', index, e.target.value)} />
                                 <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('problem', 'listItems', index)}><Trash2 className="w-4 h-4" /></Button>
                             </div>
                         ))}
-                        <Button variant="outline" onClick={() => handleAddListItem('problem', 'listItems')}><Plus className="w-4 h-4 mr-2" />Add List Item</Button>
-
-                         <div className="grid gap-2">
-                            <Label>How-to Title</Label>
-                            <Input value={formData.problem?.howToTitle} onChange={(e) => handleFieldChange('problem', 'howToTitle', e.target.value)} />
-                        </div>
-                         <Label>How-to List Items</Label>
-                        {(formData.problem?.howToListItems || []).map((item: string, index: number) => (
-                             <div key={index} className="flex gap-2 items-center">
-                                <Input value={item} onChange={(e) => handleListItemChange('problem', 'howToListItems', index, e.target.value)} />
-                                <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('problem', 'howToListItems', index)}><Trash2 className="w-4 h-4" /></Button>
-                            </div>
-                        ))}
-                        <Button variant="outline" onClick={() => handleAddListItem('problem', 'howToListItems')}><Plus className="w-4 h-4 mr-2" />Add How-to Item</Button>
-
-                        <div className="grid gap-2">
-                            <Label>Question</Label>
-                            <Input value={formData.problem?.question} onChange={(e) => handleFieldChange('problem', 'question', e.target.value)} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label>CTA Button Text</Label>
-                            <Input value={formData.problem?.ctaButtonText} onChange={(e) => handleFieldChange('problem', 'ctaButtonText', e.target.value)} />
-                        </div>
+                        <Button variant="outline" onClick={() => handleAddListItem('problem', 'listItems')}><Plus className="w-4 h-4 mr-2" />Ajouter un élément</Button>
                     </AccordionContent>
                 </AccordionItem>
                 
                  {/* Expertise Section */}
-                <AccordionItem value="item-expertise">
+                <AccordionItem value="expertise">
                     <AccordionTrigger>{SECTION_CONFIG.expertise.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <ImageUpload label="Background Image" value={formData.expertise?.backgroundImageUrl} onChange={(url) => handleFieldChange('expertise', 'backgroundImageUrl', url)} />
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Input value={formData.expertise?.title} onChange={(e) => handleFieldChange('expertise', 'title', e.target.value)} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label>Subtitle</Label>
-                            <Input value={formData.expertise?.subtitle} onChange={(e) => handleFieldChange('expertise', 'subtitle', e.target.value)} />
-                        </div>
+                        <ImageUpload label="Image de fond" value={formData.expertise?.backgroundImageUrl} onChange={(val) => handleFieldChange('expertise', 'backgroundImageUrl', val)} enableStyling />
+                        <div className="grid gap-2"><Label>Titre</Label><Input value={formData.expertise?.title} onChange={(e) => handleFieldChange('expertise', 'title', e.target.value)} /></div>
+                        <div className="grid gap-2"><Label>Sous-titre</Label><Input value={formData.expertise?.subtitle} onChange={(e) => handleFieldChange('expertise', 'subtitle', e.target.value)} /></div>
                     </AccordionContent>
                 </AccordionItem>
 
                  {/* Results Section */}
-                <AccordionItem value="item-results">
+                <AccordionItem value="results">
                     <AccordionTrigger>{SECTION_CONFIG.results.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Input value={formData.results?.title} onChange={(e) => handleFieldChange('results', 'title', e.target.value)} />
-                        </div>
-
+                        <div className="grid gap-2"><Label>Titre Principal</Label><Input value={formData.results?.title} onChange={(e) => handleFieldChange('results', 'title', e.target.value)} /></div>
                         <Card className="p-4">
-                            <Label className="font-bold">"Before" Column</Label>
-                            <div className="grid gap-2 mt-2">
-                                <Label>Title</Label>
-                                <Input value={formData.results?.withoutTitle} onChange={(e) => handleFieldChange('results', 'withoutTitle', e.target.value)} />
-                            </div>
-                            <div className="grid gap-2 mt-2">
-                                <Label>List Items</Label>
-                                {(formData.results?.withoutItems || []).map((item: string, index: number) => (
-                                    <div key={index} className="flex gap-2 items-center">
-                                        <Input value={item} onChange={(e) => handleListItemChange('results', 'withoutItems', index, e.target.value)} />
-                                        <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('results', 'withoutItems', index)}><Trash2 className="w-4 h-4" /></Button>
-                                    </div>
-                                ))}
-                                <Button variant="outline" onClick={() => handleAddListItem('results', 'withoutItems')}><Plus className="w-4 h-4 mr-2" />Add Item</Button>
-                            </div>
-                            <ImageUpload label="Image" value={formData.results?.withoutImage} onChange={(url) => handleFieldChange('results', 'withoutImage', url)} />
+                            <Label className="font-bold">Colonne "Avant"</Label>
+                            <div className="grid gap-2 mt-2"><Label>Titre</Label><Input value={formData.results?.withoutTitle} onChange={(e) => handleFieldChange('results', 'withoutTitle', e.target.value)} /></div>
+                            <ImageUpload label="Image" value={formData.results?.withoutImage} onChange={(val) => handleFieldChange('results', 'withoutImage', val)} enableStyling />
                         </Card>
-                        
                         <Card className="p-4">
-                             <Label className="font-bold">"After" Column</Label>
-                             <div className="grid gap-2 mt-2">
-                                <Label>Title</Label>
-                                <Input value={formData.results?.withTitle} onChange={(e) => handleFieldChange('results', 'withTitle', e.target.value)} />
-                            </div>
-                             <div className="grid gap-2 mt-2">
-                                <Label>List Items</Label>
-                                {(formData.results?.withItems || []).map((item: string, index: number) => (
-                                    <div key={index} className="flex gap-2 items-center">
-                                        <Input value={item} onChange={(e) => handleListItemChange('results', 'withItems', index, e.target.value)} />
-                                        <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('results', 'withItems', index)}><Trash2 className="w-4 h-4" /></Button>
-                                    </div>
-                                ))}
-                                <Button variant="outline" onClick={() => handleAddListItem('results', 'withItems')}><Plus className="w-4 h-4 mr-2" />Add Item</Button>
-                            </div>
-                             <ImageUpload label="Image" value={formData.results?.withImage} onChange={(url) => handleFieldChange('results', 'withImage', url)} />
+                             <Label className="font-bold">Colonne "Après"</Label>
+                             <div className="grid gap-2 mt-2"><Label>Titre</Label><Input value={formData.results?.withTitle} onChange={(e) => handleFieldChange('results', 'withTitle', e.target.value)} /></div>
+                             <ImageUpload label="Image" value={formData.results?.withImage} onChange={(val) => handleFieldChange('results', 'withImage', val)} enableStyling />
                         </Card>
-
-                        <div className="grid gap-2">
-                            <Label>Bonus Text</Label>
-                            <Input value={formData.results?.bonus} onChange={(e) => handleFieldChange('results', 'bonus', e.target.value)} />
-                        </div>
-                         <div className="grid gap-2">
-                            <Label>CTA Button Text</Label>
-                            <Input value={formData.results?.ctaButtonText} onChange={(e) => handleFieldChange('results', 'ctaButtonText', e.target.value)} />
-                        </div>
                     </AccordionContent>
                 </AccordionItem>
 
                  {/* Beneficiaries Section */}
-                <AccordionItem value="item-beneficiaries">
+                <AccordionItem value="beneficiaries">
                     <AccordionTrigger>{SECTION_CONFIG.beneficiaries.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Input value={formData.beneficiaries?.title} onChange={(e) => handleFieldChange('beneficiaries', 'title', e.target.value)} />
-                        </div>
-                        <Label>Items</Label>
+                        <div className="grid gap-2"><Label>Titre</Label><Input value={formData.beneficiaries?.title} onChange={(e) => handleFieldChange('beneficiaries', 'title', e.target.value)} /></div>
+                        <Label>Éléments</Label>
                         {(formData.beneficiaries?.items || []).map((item: any, index: number) => (
                             <Card key={index} className="p-4">
                                 <div className="flex justify-between items-center mb-2">
-                                <h4 className="font-semibold">Item {index + 1}</h4>
+                                <h4 className="font-semibold">Bénéficiaire {index + 1}</h4>
                                 <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('beneficiaries', 'items', index)}><Trash2 className="w-4 h-4" /></Button>
                                 </div>
                                 <div className="space-y-4">
-                                    <Input placeholder="Name (e.g., Dentistes)" value={item.name} onChange={(e) => handleObjectInListChange('beneficiaries', 'items', index, 'name', e.target.value)} />
+                                    <Input placeholder="Nom" value={item.name} onChange={(e) => handleObjectInListChange('beneficiaries', 'items', index, 'name', e.target.value)} />
                                     <Textarea placeholder="Description" value={item.description} onChange={(e) => handleObjectInListChange('beneficiaries', 'items', index, 'description', e.target.value)} />
-                                    <ImageUpload label="Image" value={item.imageUrl} onChange={(url) => handleObjectInListChange('beneficiaries', 'items', index, 'imageUrl', url)} />
+                                    <ImageUpload label="Image" value={item.imageUrl} onChange={(val) => handleObjectInListChange('beneficiaries', 'items', index, 'imageUrl', val)} enableStyling />
                                 </div>
                             </Card>
                         ))}
-                        <Button variant="outline" onClick={() => handleAddObjectInList('beneficiaries', 'items', { name: "", description: "", imageUrl: "" })}><Plus className="w-4 h-4 mr-2" /> Add Beneficiary</Button>
-                        
-                        <div className="grid gap-2 pt-4 border-t mt-4">
-                            <Label>Texte de conclusion</Label>
-                            <Input value={formData.beneficiaries?.conclusion || ''} onChange={(e) => handleFieldChange('beneficiaries', 'conclusion', e.target.value)} placeholder="Texte de conclusion..."/>
-                        </div>
-                        <div className="grid gap-2">
-                           <Label>Texte du bouton CTA</Label>
-                           <Input value={formData.beneficiaries?.ctaButtonText || ''} onChange={(e) => handleFieldChange('beneficiaries', 'ctaButtonText', e.target.value)} placeholder="Texte du bouton..."/>
-                       </div>
-                    </AccordionContent>
-                </AccordionItem>
-                
-                 {/* Timeline Method Section */}
-                <AccordionItem value="item-timeline-method">
-                    <AccordionTrigger>{SECTION_CONFIG.timelineMethod.label}</AccordionTrigger>
-                    <AccordionContent className="space-y-4 p-4">
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Input value={formData.timelineMethod?.title} onChange={(e) => handleFieldChange('timelineMethod', 'title', e.target.value)} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label>CTA Button Text</Label>
-                            <Input value={formData.timelineMethod?.ctaButtonText} onChange={(e) => handleFieldChange('timelineMethod', 'ctaButtonText', e.target.value)} />
-                        </div>
-                        <Label>Steps</Label>
-                        {(formData.timelineMethod?.steps || []).map((step: any, index: number) => (
-                            <Card key={index} className="p-4">
-                                <div className="flex justify-between items-center mb-2">
-                                <h4 className="font-semibold">Step {index + 1}</h4>
-                                <Button size="icon" variant="destructive" onClick={() => handleRemoveListItem('timelineMethod', 'steps', index)}><Trash2 className="w-4 h-4" /></Button>
-                                </div>
-                                <div className="space-y-4">
-                                    <Input placeholder="Step Title (e.g., ÉTAPE 1)" value={step.stepTitle} onChange={(e) => handleObjectInListChange('timelineMethod', 'steps', index, 'stepTitle', e.target.value)} />
-                                    <Input placeholder="Title (e.g., DÉCOUVERTE)" value={step.title} onChange={(e) => handleObjectInListChange('timelineMethod', 'steps', index, 'title', e.target.value)} />
-                                    <Textarea placeholder="Description" value={step.description} onChange={(e) => handleObjectInListChange('timelineMethod', 'steps', index, 'description', e.target.value)} />
-                                    <IconSelect label="Icon" value={step.iconName} onChange={(val) => handleObjectInListChange('timelineMethod', 'steps', index, 'iconName', val)} />
-                                    <Select value={step.position} onValueChange={(val) => handleObjectInListChange('timelineMethod', 'steps', index, 'position', val)}>
-                                        <SelectTrigger><SelectValue placeholder="Position" /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="left">Left</SelectItem>
-                                            <SelectItem value="right">Right</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </Card>
-                        ))}
-                        <Button variant="outline" onClick={() => handleAddObjectInList('timelineMethod', 'steps', { stepTitle: "", title: "", description: "", iconName: "Compass", position: "left" })}><Plus className="w-4 h-4 mr-2" /> Add Step</Button>
-                    </AccordionContent>
-                </AccordionItem>
-
-                {/* Method Section */}
-                <AccordionItem value="item-method">
-                    <AccordionTrigger>{SECTION_CONFIG.method.label}</AccordionTrigger>
-                    <AccordionContent className="space-y-4 p-4">
-                        <Label>Étapes</Label>
-                        <div className="space-y-2">
-                           {(formData.method?.steps || []).map((step: any, index: number) => (
-                               <Card key={index} className="overflow-visible">
-                                   <Collapsible>
-                                       <CollapsibleTrigger asChild>
-                                           <div className="flex items-center justify-between p-4 cursor-pointer">
-                                                <CardTitle className="text-base">{step.title || `Étape ${index + 1}`}</CardTitle>
-                                                <ChevronDown className="h-4 w-4" />
-                                           </div>
-                                       </CollapsibleTrigger>
-                                       <CollapsibleContent>
-                                           <CardContent className="pt-0 p-4 space-y-4">
-                                               <Input placeholder="Titre de l'étape" value={step.title} onChange={(e) => handleObjectInListChange('method', 'steps', index, 'title', e.target.value)} />
-                                               <Textarea placeholder="Description de l'étape" value={step.description} onChange={(e) => handleObjectInListChange('method', 'steps', index, 'description', e.target.value)} />
-                                               <ImageUpload label="Image (optionnel pour étape 1 & 2)" value={step.imageUrl} onChange={(url) => handleObjectInListChange('method', 'steps', index, 'imageUrl', url)} />
-                                               
-                                               <Label>Sous-étapes (pour l'étape 3)</Label>
-                                               {(step.subSteps || []).map((subStep: any, subIndex: number) => (
-                                                   <div key={subIndex} className="flex gap-2 items-center border-t pt-2">
-                                                       <IconSelect value={subStep.iconName} onChange={(val) => handleSubStepChange(index, subIndex, 'iconName', val)} />
-                                                       <Input placeholder="Nom de la sous-étape" value={subStep.name} onChange={(e) => handleSubStepChange(index, subIndex, 'name', e.target.value)} />
-                                                       <Button size="icon" variant="ghost" className="text-destructive" onClick={() => handleRemoveSubStep(index, subIndex)}>
-                                                           <Trash2 className="w-4 h-4" />
-                                                       </Button>
-                                                   </div>
-                                               ))}
-                                               <Button variant="outline" size="sm" onClick={() => handleAddSubStep(index)}>
-                                                   <Plus className="w-4 h-4 mr-2" /> Ajouter une sous-étape
-                                               </Button>
-                                           </CardContent>
-                                       </CollapsibleContent>
-                                   </Collapsible>
-                                   <div className="flex justify-end p-2">
-                                        <Button size="sm" variant="destructive" onClick={() => handleRemoveListItem('method', 'steps', index)}>Supprimer l'étape</Button>
-                                   </div>
-                               </Card>
-                           ))}
-                       </div>
-                       <Button variant="outline" onClick={() => handleAddObjectInList('method', 'steps', { title: "", description: "", imageUrl: "", subSteps: [] })}><Plus className="w-4 h-4 mr-2" /> Ajouter une étape</Button>
-                        <div className="grid gap-2 pt-4 border-t">
-                            <Label>Texte de conclusion</Label>
-                            <Input value={formData.method?.conclusion || ''} onChange={(e) => handleFieldChange('method', 'conclusion', e.target.value)} placeholder="Texte de conclusion..."/>
-                        </div>
-                        <div className="grid gap-2">
-                           <Label>Texte du bouton CTA</Label>
-                           <Input value={formData.method?.ctaButtonText || ''} onChange={(e) => handleFieldChange('method', 'ctaButtonText', e.target.value)} placeholder="Texte du bouton..."/>
-                       </div>
+                        <Button variant="outline" onClick={() => handleAddObjectInList('beneficiaries', 'items', { name: "", description: "", imageUrl: "" })}><Plus className="w-4 h-4 mr-2" /> Ajouter un bénéficiaire</Button>
                     </AccordionContent>
                 </AccordionItem>
                 
                  {/* Final CTA Section */}
-                <AccordionItem value="item-finalCta">
+                <AccordionItem value="finalCta">
                     <AccordionTrigger>{SECTION_CONFIG.finalCta.label}</AccordionTrigger>
                     <AccordionContent className="space-y-4 p-4">
-                        <ImageUpload label="Background Image" value={formData.finalCta?.backgroundImageUrl} onChange={(url) => handleFieldChange('finalCta', 'backgroundImageUrl', url)} />
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Input value={formData.finalCta?.title} onChange={(e) => handleFieldChange('finalCta', 'title', e.target.value)} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label>Subtitle</Label>
-                            <Input value={formData.finalCta?.subtitle} onChange={(e) => handleFieldChange('finalCta', 'subtitle', e.target.value)} />
-                        </div>
+                        <ImageUpload label="Image de fond" value={formData.finalCta?.backgroundImageUrl} onChange={(val) => handleFieldChange('finalCta', 'backgroundImageUrl', val)} enableStyling />
+                        <div className="grid gap-2"><Label>Titre</Label><Input value={formData.finalCta?.title} onChange={(e) => handleFieldChange('finalCta', 'title', e.target.value)} /></div>
+                        <div className="grid gap-2"><Label>Sous-titre</Label><Input value={formData.finalCta?.subtitle} onChange={(e) => handleFieldChange('finalCta', 'subtitle', e.target.value)} /></div>
                     </AccordionContent>
                 </AccordionItem>
-
             </Accordion>
+            
             <div className="text-right mt-4">
-                 <Button onClick={() => handleSave()}>Save Page</Button>
+                 <Button onClick={() => handleSave()}>Enregistrer tout</Button>
             </div>
         </div>
     );
 }
-
-    
