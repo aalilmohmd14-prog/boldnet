@@ -1,130 +1,112 @@
 'use client';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy } from 'firebase/firestore';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { PlayCircle, ArrowUpRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Header from '../components/header';
 import Footer from '../components/footer';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-// Helper to get YouTube embed URL with autoplay enabled, supporting Shorts
-function getYouTubeEmbedUrl(url: string) {
+// Helper to extract YouTube video ID from various URL formats
+function getYouTubeVideoId(url: string) {
     if (!url) return null;
-    let videoId = null;
     try {
         const urlObj = new URL(url);
         if (urlObj.hostname === 'youtu.be') {
-            videoId = urlObj.pathname.slice(1);
+            return urlObj.pathname.slice(1);
         } else if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
             if (urlObj.pathname.startsWith('/shorts/')) {
-                videoId = urlObj.pathname.split('/')[2];
+                return urlObj.pathname.split('/')[2];
             } else {
-                videoId = urlObj.searchParams.get('v');
+                return urlObj.searchParams.get('v');
             }
         }
     } catch (error) {
         console.error("Invalid YouTube URL:", url);
-        return null;
-    }
-
-    if (videoId) {
-        // autoplay=1 starts the video immediately
-        // mute=1 is required by most browsers to allow autoplay
-        // rel=0 prevents showing related videos from other channels
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`;
     }
     return null;
 }
 
 const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
-    const embedUrl = item.videoUrl ? getYouTubeEmbedUrl(item.videoUrl) : null;
+    const videoId = getYouTubeVideoId(item.videoUrl);
+    // Parameters for background-style playback:
+    // autoplay=1: start immediately
+    // mute=1: required for autoplay
+    // loop=1 & playlist=VIDEO_ID: required for looping
+    // controls=0: hide player controls
+    // modestbranding=1: hide youtube logo
+    // rel=0: hide related videos
+    const backgroundVideoUrl = videoId 
+        ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0`
+        : null;
     
     // Pattern logic for asymmetrical grid (Hello Monday style)
     const isLarge = index % 3 === 0;
+    
+    const cardRef = useRef(null);
+    const isInView = useInView(cardRef, { amount: 0.2 });
 
-    const Content = () => (
-        <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: index * 0.1 }}
-            className={cn(
-                "group relative overflow-hidden cursor-pointer bg-neutral-900 rounded-[2rem]",
-                isLarge ? "aspect-[16/9] md:aspect-[21/9]" : "aspect-[4/5] md:aspect-[3/4]"
-            )}
-        >
-            <Image
-                src={item.imageUrl}
-                alt={item.title}
-                fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            />
-            
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
-
-            {/* Video Indicator */}
-            {item.videoUrl && (
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="bg-white/10 backdrop-blur-md p-4 rounded-full border border-white/20">
-                        <PlayCircle className="w-12 h-12 text-white" />
-                    </div>
+    return (
+        <div className={isLarge ? "col-span-1 md:col-span-2" : "col-span-1"}>
+            <motion.div 
+                ref={cardRef}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className={cn(
+                    "group relative overflow-hidden bg-neutral-900 rounded-[2rem] shadow-2xl",
+                    isLarge ? "aspect-[16/9] md:aspect-[21/9]" : "aspect-[4/5] md:aspect-[3/4]"
+                )}
+            >
+                {/* Background Media */}
+                <div className="absolute inset-0 w-full h-full">
+                    {item.videoUrl && backgroundVideoUrl && isInView ? (
+                        <div className="relative w-full h-full overflow-hidden pointer-events-none">
+                            <iframe
+                                src={backgroundVideoUrl}
+                                title={item.title}
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                className="absolute w-[300%] h-[300%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-[1.1] md:scale-100"
+                                style={{ 
+                                    aspectRatio: '16/9',
+                                    minWidth: '100%', 
+                                    minHeight: '100%',
+                                    objectFit: 'cover'
+                                }}
+                            ></iframe>
+                        </div>
+                    ) : (
+                        <Image
+                            src={item.imageUrl}
+                            alt={item.title}
+                            fill
+                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        />
+                    )}
                 </div>
-            )}
+                
+                {/* Overlay Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/90 transition-colors duration-500" />
 
-            {/* Project Info */}
-            <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
-                <div className="flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <div className="flex items-center justify-between">
+                {/* Project Info */}
+                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
+                    <div className="flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                         <h3 className={cn(
                             "font-headline font-bold text-white leading-tight",
                             isLarge ? "text-3xl md:text-5xl" : "text-2xl md:text-3xl"
                         )}>
                             {item.title}
                         </h3>
-                        <div className="bg-white text-black p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-75 group-hover:scale-100">
-                            <ArrowUpRight className="w-5 h-5" />
-                        </div>
+                        <p className="text-white/70 max-w-xl line-clamp-2 text-sm md:text-lg">
+                            {item.description}
+                        </p>
                     </div>
-                    <p className="text-white/70 max-w-xl line-clamp-2 text-sm md:text-lg">
-                        {item.description}
-                    </p>
                 </div>
-            </div>
-        </motion.div>
-    );
-
-    if (embedUrl) {
-        return (
-            <Dialog>
-                <DialogTrigger asChild>
-                    <div className={isLarge ? "col-span-1 md:col-span-2" : "col-span-1"}>
-                        <Content />
-                    </div>
-                </DialogTrigger>
-                <DialogContent className="max-w-5xl p-0 border-0 bg-transparent overflow-hidden rounded-3xl">
-                    <div className="aspect-video">
-                        <iframe
-                            src={embedUrl}
-                            title={item.title}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            className="w-full h-full"
-                        ></iframe>
-                    </div>
-                </DialogContent>
-            </Dialog>
-        );
-    }
-
-    return (
-        <div className={isLarge ? "col-span-1 md:col-span-2" : "col-span-1"}>
-            <Content />
+            </motion.div>
         </div>
     );
 };
