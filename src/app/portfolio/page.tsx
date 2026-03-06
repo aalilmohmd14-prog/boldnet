@@ -42,73 +42,66 @@ const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
         ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0&disablekb=1`
         : null;
     
-    // Pattern logic for asymmetrical grid
-    const isLarge = index % 3 === 0;
-    
     const cardRef = useRef(null);
-    const isInView = useInView(cardRef, { amount: 0.1 });
+    const isInView = useInView(cardRef, { amount: 0.3 });
 
     return (
-        <div className={isLarge ? "col-span-1 md:col-span-2" : "col-span-1"}>
-            <motion.div 
-                ref={cardRef}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={cn(
-                    "group relative overflow-hidden bg-neutral-900 rounded-[2rem] shadow-2xl transition-all duration-500",
-                    isLarge ? "aspect-[16/10] md:aspect-[21/10]" : "aspect-[9/12] md:aspect-[9/11]"
-                )}
-            >
-                {/* Background Media */}
-                <div className="absolute inset-0 w-full h-full overflow-hidden">
-                    {item.videoUrl && backgroundVideoUrl && isInView ? (
-                        <div className="relative w-full h-full pointer-events-none">
-                            <iframe
-                                src={backgroundVideoUrl}
-                                title={item.title}
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                                style={{ 
-                                    width: '100%',
-                                    height: '177.77%', // (16/9) * 100 to ensure 9:16 covers 1:1 or 4:5
-                                    minWidth: '100%',
-                                    minHeight: '100%',
-                                    aspectRatio: '9/16'
-                                }}
-                            ></iframe>
-                        </div>
-                    ) : (
-                        <Image
-                            src={item.imageUrl}
-                            alt={item.title}
-                            fill
-                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        />
-                    )}
-                </div>
-                
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
-
-                {/* Project Info */}
-                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end pointer-events-none">
-                    <div className="flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 className={cn(
-                            "font-headline font-bold text-white leading-tight",
-                            isLarge ? "text-3xl md:text-5xl" : "text-2xl md:text-3xl"
-                        )}>
-                            {item.title}
-                        </h3>
-                        <p className="text-white/70 max-w-xl line-clamp-2 text-sm md:text-lg">
-                            {item.description}
-                        </p>
+        <motion.div 
+            ref={cardRef}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: (index % 3) * 0.1 }}
+            className={cn(
+                "group relative overflow-hidden bg-neutral-900 rounded-[2.5rem] shadow-2xl transition-all duration-700 aspect-[9/16] w-full",
+                index % 3 === 1 ? "md:mt-24" : "" // Stagger effect for masonry look
+            )}
+        >
+            {/* Background Media */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+                {item.videoUrl && backgroundVideoUrl && isInView ? (
+                    <div className="relative w-full h-full pointer-events-none scale-105">
+                        <iframe
+                            src={backgroundVideoUrl}
+                            title={item.title}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full"
+                            style={{ 
+                                objectFit: 'cover',
+                                minWidth: '100%',
+                                minHeight: '100%'
+                            }}
+                        ></iframe>
                     </div>
+                ) : (
+                    <Image
+                        src={item.imageUrl}
+                        alt={item.title}
+                        fill
+                        className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+                    />
+                )}
+            </div>
+            
+            {/* Overlay Gradient - Darker at bottom for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+
+            {/* Project Info */}
+            <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                <div className="flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <span className="text-red-500 font-bold tracking-widest uppercase text-[10px]">
+                        BoldNet Production
+                    </span>
+                    <h3 className="font-headline font-bold text-white leading-tight text-2xl md:text-3xl">
+                        {item.title}
+                    </h3>
+                    <p className="text-white/60 max-w-xs line-clamp-2 text-sm">
+                        {item.description}
+                    </p>
                 </div>
-            </motion.div>
-        </div>
+            </div>
+        </motion.div>
     );
 };
 
@@ -122,43 +115,43 @@ function PortfolioPageContent() {
     const { data: items, isLoading: isLoadingItems } = useCollection(itemsQuery);
 
     return (
-        <div className="flex flex-col min-h-dvh bg-[#0a0a0a]">
+        <div className="flex flex-col min-h-dvh bg-[#050505]">
             <Header />
             <main className="flex-1">
                 {/* Hero Header Section */}
-                <section className="pt-40 pb-20 md:pt-52 md:pb-32 px-4 md:px-6">
-                    <div className="container max-w-7xl mx-auto text-center md:text-left">
+                <section className="pt-40 pb-16 md:pt-52 md:pb-24 px-4 md:px-6">
+                    <div className="container max-w-7xl mx-auto">
                         <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 1 }}
                             className="max-w-4xl"
                         >
-                            <span className="text-red-500 font-bold tracking-[0.2em] uppercase text-xs md:text-sm block mb-6">
-                                Notre Travail • Contenu Vertical
+                            <span className="text-red-500 font-bold tracking-[0.3em] uppercase text-xs md:text-sm block mb-6">
+                                Showcase • {items?.length || 0} Projets
                             </span>
-                            <h1 className="text-5xl md:text-8xl font-extrabold font-headline text-white leading-[0.9] tracking-tighter">
-                                Des projets qui <br /> font du bruit.
+                            <h1 className="text-6xl md:text-9xl font-extrabold font-headline text-white leading-[0.85] tracking-tighter">
+                                IMPACT <br /> <span className="text-transparent stroke-white" style={{ WebkitTextStroke: '1px white' }}>VISUEL.</span>
                             </h1>
                         </motion.div>
                     </div>
                 </section>
 
-                {/* Grid Section */}
-                <section className="pb-32 px-4 md:px-6">
+                {/* Vertical Grid Section */}
+                <section className="pb-40 px-4 md:px-6">
                     <div className="container max-w-7xl mx-auto">
                         {isLoadingItems ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <Skeleton className="col-span-1 md:col-span-2 aspect-[21/9] rounded-[2rem] bg-white/5" />
-                                <Skeleton className="aspect-[3/4] rounded-[2rem] bg-white/5" />
-                                <Skeleton className="aspect-[3/4] rounded-[2rem] bg-white/5" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/5" />
+                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/5 md:mt-24" />
+                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/5" />
                             </div>
                         ) : !items || items.length === 0 ? (
-                            <div className="text-center py-32">
-                                <p className="text-white/40 text-xl">Aucun projet à afficher pour le moment.</p>
+                            <div className="text-center py-32 border border-white/10 rounded-[3rem] bg-white/5">
+                                <p className="text-white/40 text-xl font-headline italic">Aucune réalisation pour le moment.</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-16">
                                 {items.map((item, index) => (
                                     <PortfolioItemCard key={item.id} item={item} index={index} />
                                 ))}
