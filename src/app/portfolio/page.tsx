@@ -31,13 +31,6 @@ function getYouTubeVideoId(url: string) {
 
 const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
     const videoId = getYouTubeVideoId(item.videoUrl);
-    // Parameters for background-style playback:
-    // autoplay=1: start immediately
-    // mute=1: required for autoplay
-    // loop=1 & playlist=VIDEO_ID: required for looping
-    // controls=0: hide player controls
-    // modestbranding=1: hide youtube logo
-    // rel=0: hide related videos
     const backgroundVideoUrl = videoId 
         ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0&disablekb=1`
         : null;
@@ -53,8 +46,8 @@ const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: (index % 3) * 0.1 }}
             className={cn(
-                "group relative overflow-hidden bg-neutral-900 rounded-[2.5rem] shadow-2xl transition-all duration-700 aspect-[9/16] w-full",
-                index % 3 === 1 ? "md:mt-24" : "" // Stagger effect for masonry look
+                "group relative overflow-hidden bg-neutral-900/40 backdrop-blur-sm rounded-[2.5rem] shadow-2xl transition-all duration-700 aspect-[9/16] w-full border border-white/10",
+                index % 3 === 1 ? "md:mt-24" : ""
             )}
         >
             {/* Background Media */}
@@ -84,13 +77,13 @@ const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
                 )}
             </div>
             
-            {/* Overlay Gradient - Darker at bottom for text readability */}
+            {/* Overlay Gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
             {/* Project Info */}
             <div className="absolute inset-0 p-8 flex flex-col justify-end">
                 <div className="flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <span className="text-red-500 font-bold tracking-widest uppercase text-[10px]">
+                    <span className="text-red-400 font-bold tracking-widest uppercase text-[10px]">
                         BoldNet Production
                     </span>
                     <h3 className="font-headline font-bold text-white leading-tight text-2xl md:text-3xl">
@@ -115,7 +108,7 @@ function PortfolioPageContent() {
     const { data: items, isLoading: isLoadingItems } = useCollection(itemsQuery);
 
     return (
-        <div className="flex flex-col min-h-dvh bg-[#050505]">
+        <div className="flex flex-col min-h-dvh bg-transparent">
             <Header />
             <main className="flex-1">
                 {/* Hero Header Section */}
@@ -127,10 +120,10 @@ function PortfolioPageContent() {
                             transition={{ duration: 1 }}
                             className="max-w-4xl"
                         >
-                            <span className="text-red-500 font-bold tracking-[0.3em] uppercase text-xs md:text-sm block mb-6">
+                            <span className="text-white font-bold tracking-[0.3em] uppercase text-xs md:text-sm block mb-6 drop-shadow-md">
                                 Showcase • {items?.length || 0} Projets
                             </span>
-                            <h1 className="text-6xl md:text-9xl font-extrabold font-headline text-white leading-[0.85] tracking-tighter">
+                            <h1 className="text-6xl md:text-9xl font-extrabold font-headline text-white leading-[0.85] tracking-tighter drop-shadow-xl">
                                 IMPACT <br /> <span className="text-transparent stroke-white" style={{ WebkitTextStroke: '1px white' }}>VISUEL.</span>
                             </h1>
                         </motion.div>
@@ -142,12 +135,12 @@ function PortfolioPageContent() {
                     <div className="container max-w-7xl mx-auto">
                         {isLoadingItems ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/5" />
-                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/5 md:mt-24" />
-                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/5" />
+                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/10" />
+                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/10 md:mt-24" />
+                                <Skeleton className="aspect-[9/16] rounded-[2.5rem] bg-white/10" />
                             </div>
                         ) : !items || items.length === 0 ? (
-                            <div className="text-center py-32 border border-white/10 rounded-[3rem] bg-white/5">
+                            <div className="text-center py-32 border border-white/10 rounded-[3rem] bg-white/5 backdrop-blur-sm">
                                 <p className="text-white/40 text-xl font-headline italic">Aucune réalisation pour le moment.</p>
                             </div>
                         ) : (
