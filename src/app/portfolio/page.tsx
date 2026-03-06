@@ -39,14 +39,14 @@ const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
     // modestbranding=1: hide youtube logo
     // rel=0: hide related videos
     const backgroundVideoUrl = videoId 
-        ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0`
+        ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0&disablekb=1`
         : null;
     
-    // Pattern logic for asymmetrical grid (Hello Monday style)
+    // Pattern logic for asymmetrical grid
     const isLarge = index % 3 === 0;
     
     const cardRef = useRef(null);
-    const isInView = useInView(cardRef, { amount: 0.2 });
+    const isInView = useInView(cardRef, { amount: 0.1 });
 
     return (
         <div className={isLarge ? "col-span-1 md:col-span-2" : "col-span-1"}>
@@ -57,25 +57,26 @@ const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className={cn(
-                    "group relative overflow-hidden bg-neutral-900 rounded-[2rem] shadow-2xl",
-                    isLarge ? "aspect-[16/9] md:aspect-[21/9]" : "aspect-[4/5] md:aspect-[3/4]"
+                    "group relative overflow-hidden bg-neutral-900 rounded-[2rem] shadow-2xl transition-all duration-500",
+                    isLarge ? "aspect-[16/10] md:aspect-[21/10]" : "aspect-[9/12] md:aspect-[9/11]"
                 )}
             >
                 {/* Background Media */}
-                <div className="absolute inset-0 w-full h-full">
+                <div className="absolute inset-0 w-full h-full overflow-hidden">
                     {item.videoUrl && backgroundVideoUrl && isInView ? (
-                        <div className="relative w-full h-full overflow-hidden pointer-events-none">
+                        <div className="relative w-full h-full pointer-events-none">
                             <iframe
                                 src={backgroundVideoUrl}
                                 title={item.title}
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                className="absolute w-[300%] h-[300%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-[1.1] md:scale-100"
+                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                                 style={{ 
-                                    aspectRatio: '16/9',
-                                    minWidth: '100%', 
+                                    width: '100%',
+                                    height: '177.77%', // (16/9) * 100 to ensure 9:16 covers 1:1 or 4:5
+                                    minWidth: '100%',
                                     minHeight: '100%',
-                                    objectFit: 'cover'
+                                    aspectRatio: '9/16'
                                 }}
                             ></iframe>
                         </div>
@@ -90,10 +91,10 @@ const PortfolioItemCard = ({ item, index }: { item: any; index: number }) => {
                 </div>
                 
                 {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/90 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
 
                 {/* Project Info */}
-                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
+                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end pointer-events-none">
                     <div className="flex flex-col gap-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                         <h3 className={cn(
                             "font-headline font-bold text-white leading-tight",
@@ -126,15 +127,15 @@ function PortfolioPageContent() {
             <main className="flex-1">
                 {/* Hero Header Section */}
                 <section className="pt-40 pb-20 md:pt-52 md:pb-32 px-4 md:px-6">
-                    <div className="container max-w-7xl mx-auto">
+                    <div className="container max-w-7xl mx-auto text-center md:text-left">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8 }}
-                            className="max-w-3xl"
+                            className="max-w-4xl"
                         >
                             <span className="text-red-500 font-bold tracking-[0.2em] uppercase text-xs md:text-sm block mb-6">
-                                Notre Travail
+                                Notre Travail • Contenu Vertical
                             </span>
                             <h1 className="text-5xl md:text-8xl font-extrabold font-headline text-white leading-[0.9] tracking-tighter">
                                 Des projets qui <br /> font du bruit.
