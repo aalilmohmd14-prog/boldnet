@@ -19,7 +19,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   const isSanityStudio = pathname?.startsWith('/admin/studio');
 
-  // Studio Sanity total isolation
+  // Prevent flicker by not rendering site-specific UI during hydration or on Studio pages
+  if (!mounted) return <div className="min-h-screen bg-white" />;
+
+  // Studio Sanity total isolation: NO site background, NO site providers
   if (isSanityStudio) {
     return (
       <div className="sanity-studio-container fixed inset-0 z-[9999] bg-white overflow-auto">
@@ -37,13 +40,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     >
       <FirebaseClientProvider>
         <LanguageProvider>
-          {mounted && (
-            <>
-              <DynamicTheme />
-              <DynamicFontLoader />
-              <WhatsAppButton phoneNumber="+212719802571" />
-            </>
-          )}
+          <DynamicTheme />
+          <DynamicFontLoader />
+          <WhatsAppButton phoneNumber="+212719802571" />
           <div className="site-animated-bg">
             {children}
           </div>

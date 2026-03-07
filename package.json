@@ -54,7 +54,7 @@
     "embla-carousel-autoplay": "^8.1.7",
     "embla-carousel-react": "^8.1.7",
     "firebase": "^11.9.1",
-    "framer-motion": "11.11.17",
+    "framer-motion": "12.4.7",
     "lucide-react": "^0.475.0",
     "next": "^15.1.7",
     "next-sanity": "^9.8.41",
@@ -81,11 +81,5 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
-  },
-  "overrides": {
-    "framer-motion": {
-      "react": "$react",
-      "react-dom": "$react-dom"
-    }
   }
 }
