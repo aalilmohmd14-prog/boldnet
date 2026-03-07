@@ -12,11 +12,12 @@ import { useEffect, useState } from 'react';
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const isSanityStudio = pathname?.startsWith('/admin/studio');
-
+  
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const isSanityStudio = pathname?.startsWith('/admin/studio');
 
   // Studio Sanity total isolation
   if (isSanityStudio) {
@@ -27,8 +28,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     );
   }
 
-  // We wrap children in providers immediately to avoid context errors during SSR/Hydration.
-  // We only defer the "browser-specific" style injections or side-effect buttons.
   return (
     <ThemeProvider
       attribute="class"
@@ -38,12 +37,16 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     >
       <FirebaseClientProvider>
         <LanguageProvider>
-          {mounted && <DynamicTheme />}
-          {mounted && <DynamicFontLoader />}
+          {mounted && (
+            <>
+              <DynamicTheme />
+              <DynamicFontLoader />
+              <WhatsAppButton phoneNumber="+212719802571" />
+            </>
+          )}
           <div className="site-animated-bg">
             {children}
           </div>
-          {mounted && <WhatsAppButton phoneNumber="+212719802571" />}
         </LanguageProvider>
       </FirebaseClientProvider>
     </ThemeProvider>
