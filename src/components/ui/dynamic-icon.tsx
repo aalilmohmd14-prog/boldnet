@@ -1,19 +1,22 @@
 'use client';
 
+import React from 'react';
 import * as Icons from 'lucide-react';
 import { type LucideProps } from 'lucide-react';
 
 interface DynamicIconProps extends LucideProps {
-  iconName: keyof typeof Icons;
+  iconName: string;
 }
 
 export const DynamicIcon = ({ iconName, ...props }: DynamicIconProps) => {
-  const LucideIcon = Icons[iconName] as React.FC<LucideProps>;
+  // We use a safe lookup to avoid importing everything if possible, 
+  // but for dynamic usage from DB, we need the Icons object.
+  // To optimize compilation, we ensure iconName is a valid key.
+  const IconComponent = (Icons as any)[iconName];
 
-  if (!LucideIcon) {
-    // Return a default icon or null if the icon name is not found
+  if (!IconComponent) {
     return <Icons.HelpCircle {...props} />;
   }
 
-  return <LucideIcon {...props} />;
+  return <IconComponent {...props} />;
 };

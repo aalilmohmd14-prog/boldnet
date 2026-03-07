@@ -7,7 +7,7 @@ export const client = createClient({
   projectId: 'lda6ia2e',
   dataset: 'production',
   apiVersion: '2023-05-03',
-  useCdn: process.env.NODE_ENV === 'production',
+  useCdn: true, // Always use CDN for better performance in dev/prod
 });
 
 const builder = imageUrlBuilder(client);
