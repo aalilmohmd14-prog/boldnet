@@ -27,11 +27,8 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     );
   }
 
-  // Prevents hydration mismatch by ensuring providers only run on client
-  if (!mounted) {
-    return <div className="site-animated-bg">{children}</div>;
-  }
-
+  // We wrap children in providers immediately to avoid context errors during SSR/Hydration.
+  // We only defer the "browser-specific" style injections or side-effect buttons.
   return (
     <ThemeProvider
       attribute="class"
@@ -41,12 +38,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     >
       <FirebaseClientProvider>
         <LanguageProvider>
-          <DynamicTheme />
-          <DynamicFontLoader />
+          {mounted && <DynamicTheme />}
+          {mounted && <DynamicFontLoader />}
           <div className="site-animated-bg">
             {children}
           </div>
-          <WhatsAppButton phoneNumber="+212719802571" />
+          {mounted && <WhatsAppButton phoneNumber="+212719802571" />}
         </LanguageProvider>
       </FirebaseClientProvider>
     </ThemeProvider>
